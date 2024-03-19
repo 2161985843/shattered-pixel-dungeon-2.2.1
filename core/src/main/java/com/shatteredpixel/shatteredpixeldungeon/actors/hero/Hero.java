@@ -242,7 +242,7 @@ public class Hero extends Char {
 		if (buff(ElixirOfMight.HTBoost.class) != null){
 			HT += buff(ElixirOfMight.HTBoost.class).boost();
 		}
-		
+
 		if (boostHP){
 			HP += Math.max(HT - curHT, 0);
 		}
@@ -402,21 +402,28 @@ public class Hero extends Char {
 	@Override
 	public void hitSound(float pitch) {
 		if (!RingOfForce.fightingUnarmed(this)) {
+			// 如果角色没有使用徒手战斗
 			belongings.attackingWeapon().hitSound(pitch);
 		} else if (RingOfForce.getBuffedBonus(this, RingOfForce.Force.class) > 0) {
-			//pitch deepens by 2.5% (additive) per point of strength, down to 75%
+			// 如果角色处于被强化状态（Force class增益）
+			// 根据角色的力量值调整声音的音调，逐渐降低音调直到75%
 			super.hitSound( pitch * GameMath.gate( 0.75f, 1.25f - 0.025f*STR(), 1f) );
 		} else {
+			// 其他情况下，音调乘以1.1
 			super.hitSound(pitch * 1.1f);
 		}
 	}
 
 	@Override
+	//处理角色进行格挡时的声音效果
 	public boolean blockSound(float pitch) {
-		if ( belongings.weapon() != null && belongings.weapon().defenseFactor(this) >= 4 ){
-			Sample.INSTANCE.play( Assets.Sounds.HIT_PARRY, 1, pitch);
+		if (belongings.weapon() != null && belongings.weapon().defenseFactor(this) >= 4) {
+			// 如果角色装备了武器且武器的防御系数大于等于4
+			// 播放格挡声音，并返回true表示成功格挡
+			Sample.INSTANCE.play(Assets.Sounds.HIT_PARRY, 1, pitch);
 			return true;
 		}
+		// 如果未满足上述条件，则调用父类的blockSound方法处理格挡声音效果
 		return super.blockSound(pitch);
 	}
 
@@ -438,188 +445,267 @@ public class Hero extends Char {
 			return 0;
 		}
 	}
-	
-	public boolean shoot( Char enemy, MissileWeapon wep ) {
-
+	//于处理角色进行射击（使用导弹武器）的行为
+	public boolean shoot(Char enemy, MissileWeapon wep) {
 		this.enemy = enemy;
 		boolean wasEnemy = enemy.alignment == Alignment.ENEMY
 				|| (enemy instanceof Mimic && enemy.alignment == Alignment.NEUTRAL);
 
-		//temporarily set the hero's weapon to the missile weapon being used
-		//TODO improve this!
+		// 暂时将英雄的武器设置为使用的导弹武器
 		belongings.thrownWeapon = wep;
-		boolean hit = attack( enemy );
+
+		// 进行攻击行为，判断是否命中目标
+		boolean hit = attack(enemy);
+
+		// 解除隐身效果
 		Invisibility.dispel();
+
+		// 恢复英雄之前的武器
 		belongings.thrownWeapon = null;
 
-		if (hit && subClass == HeroSubClass.GLADIATOR && wasEnemy){
-			Buff.affect( this, Combo.class ).hit( enemy );
+		// 如果命中目标且英雄是角斗士子类且目标为敌人
+		// 触发角斗士子类特殊效果
+		if (hit && subClass == HeroSubClass.GLADIATOR && wasEnemy) {
+			Buff.affect(this, Combo.class).hit(enemy);
 		}
 
-		if (hit && heroClass == HeroClass.DUELIST && wasEnemy){
-			Buff.affect( this, Sai.ComboStrikeTracker.class).addHit();
+		// 如果命中目标且英雄是决斗者职业且目标为敌人
+		// 触发决斗者职业特殊效果
+		if (hit && heroClass == HeroClass.DUELIST && wasEnemy) {
+			Buff.affect(this, Sai.ComboStrikeTracker.class).addHit();
 		}
 
 		return hit;
 	}
 	
 	@Override
-	public int attackSkill( Char target ) {
+	public int attackSkill(Char target) {
+		// 获取角色当前使用的武器
 		KindOfWeapon wep = belongings.attackingWeapon();
-		
+
+		// 初始化准确性为1
 		float accuracy = 1;
-		accuracy *= RingOfAccuracy.accuracyMultiplier( this );
-		
-		if (wep instanceof MissileWeapon){
-			if (Dungeon.level.adjacent( pos, target.pos )) {
-				accuracy *= (0.5f + 0.2f*pointsInTalent(Talent.POINT_BLANK));
+
+		// 根据戒指的准确性增加倍数调整准确性
+		accuracy *= RingOfAccuracy.accuracyMultiplier(this);
+
+		// 如果是使用导弹武器
+		if (wep instanceof MissileWeapon) {
+			// 根据与目标的距离不同调整准确性
+			if (Dungeon.level.adjacent(pos, target.pos)) {
+				accuracy *= (0.5f + 0.2f * pointsInTalent(Talent.POINT_BLANK));
 			} else {
 				accuracy *= 1.5f;
 			}
 		}
 
-		if (buff(Scimitar.SwordDance.class) != null){
+		// 如果角色拥有Scimitar.SwordDance类的增益效果
+		if (buff(Scimitar.SwordDance.class) != null) {
 			accuracy *= 1.25f;
 		}
-		
+
+		// 如果不是徒手战斗
 		if (!RingOfForce.fightingUnarmed(this)) {
-			return (int)(attackSkill * accuracy * wep.accuracyFactor( this, target ));
+			// 返回攻击技能乘以准确性和武器的准确性因子
+			return (int) (attackSkill * accuracy * wep.accuracyFactor(this, target));
 		} else {
-			return (int)(attackSkill * accuracy);
+			// 否则只返回攻击技能乘以准确性
+			return (int) (attackSkill * accuracy);
 		}
 	}
-	
-	@Override
-	public int defenseSkill( Char enemy ) {
 
+/**
+ * 计算角色对敌人进行防御时的防御技能值
+ * @param enemy 敌人角色
+ * @return 返回计算后的防御技能值
+ */
+	@Override
+	public int defenseSkill(Char enemy) {
+		// 如果具有Combo.ParryTracker类的增益效果
 		if (buff(Combo.ParryTracker.class) != null){
+			// 如果可以攻击敌人且没有被敌人迷惑
 			if (canAttack(enemy) && !isCharmedBy(enemy)){
+				// 影响角色自己和敌人的Combo.RiposteTracker类的增益效果
 				Buff.affect(this, Combo.RiposteTracker.class).enemy = enemy;
 			}
+			// 返回无限闪避值
 			return INFINITE_EVASION;
 		}
 
+		// 如果具有RoundShield.GuardTracker类的增益效果
 		if (buff(RoundShield.GuardTracker.class) != null){
+			// 返回无限闪避值
 			return INFINITE_EVASION;
 		}
-		
-		float evasion = defenseSkill;
-		
-		evasion *= RingOfEvasion.evasionMultiplier( this );
 
+		// 初始化闪避值为角色的防御技能
+		float evasion = defenseSkill;
+
+		// 根据戒指的闪避增加倍数调整闪避值
+		evasion *= RingOfEvasion.evasionMultiplier(this);
+
+		// 如果具有Talent.RestoredAgilityTracker类的增益效果
 		if (buff(Talent.RestoredAgilityTracker.class) != null){
+			// 如果天赋“LIQUID_AGILITY”的技能点数为1
 			if (pointsInTalent(Talent.LIQUID_AGILITY) == 1){
 				evasion *= 4f;
-			} else if (pointsInTalent(Talent.LIQUID_AGILITY) == 2){
-				return INFINITE_EVASION;
+			} else if (pointsInTalent(Talent.LIQUID_AGILITY) == 2){ // 如果天赋“LIQUID_AGILITY”的技能点数为2
+				return INFINITE_EVASION; // 返回无限闪避值
 			}
 		}
 
+		// 如果具有Quarterstaff.DefensiveStance类的增益效果
 		if (buff(Quarterstaff.DefensiveStance.class) != null){
-			evasion *= 3;
-		}
-		
-		if (paralysed > 0) {
-			evasion /= 2;
+			evasion *= 3; // 闪避值乘以3
 		}
 
+		// 如果处于麻痹状态
+		if (paralysed > 0) {
+			evasion /= 2; // 闪避值除以2
+		}
+
+		// 如果有穿戴护甲
 		if (belongings.armor() != null) {
+			// 根据护甲的闪避因子调整闪避值
 			evasion = belongings.armor().evasionFactor(this, evasion);
 		}
 
+		// 返回四舍五入后的闪避值
 		return Math.round(evasion);
 	}
-
 	@Override
 	public String defenseVerb() {
+		// 检查是否进行了招架操作
 		Combo.ParryTracker parry = buff(Combo.ParryTracker.class);
-		if (parry != null){
+		if (parry != null) {
 			parry.parried = true;
-			if (buff(Combo.class).getComboCount() < 9 || pointsInTalent(Talent.ENHANCED_COMBO) < 2){
+			// 如果连击次数小于9或者未达到强化连击技能的要求，则移除招架效果
+			if (buff(Combo.class).getComboCount() < 9 || pointsInTalent(Talent.ENHANCED_COMBO) < 2) {
 				parry.detach();
 			}
-			return Messages.get(Monk.class, "parried");
+			return Messages.get(Monk.class, "parried"); // 返回招架消息字符串
 		}
 
-		if (buff(RoundShield.GuardTracker.class) != null){
+		// 检查是否进行了护盾保护操作
+		if (buff(RoundShield.GuardTracker.class) != null) {
 			buff(RoundShield.GuardTracker.class).detach();
 			Sample.INSTANCE.play(Assets.Sounds.HIT_PARRY, 1, Random.Float(0.96f, 1.05f));
-			return Messages.get(RoundShield.GuardTracker.class, "guarded");
+			return Messages.get(RoundShield.GuardTracker.class, "guarded"); // 返回护盾保护消息字符串
 		}
 
-		if (buff(MonkEnergy.MonkAbility.Focus.FocusActivation.class) != null){
+		// 检查是否进行了专注能力激活操作
+		if (buff(MonkEnergy.MonkAbility.Focus.FocusActivation.class) != null) {
 			buff(MonkEnergy.MonkAbility.Focus.FocusActivation.class).detach();
+			// 如果sprite对象存在且可见，则播放音效
 			if (sprite != null && sprite.visible) {
 				Sample.INSTANCE.play(Assets.Sounds.HIT_PARRY, 1, Random.Float(0.96f, 1.05f));
 			}
-			return Messages.get(Monk.class, "parried");
+			return Messages.get(Monk.class, "parried"); // 返回招架消息字符串
 		}
 
+		// 如果以上条件都不满足，则调用父类的方法获取默认的防御动作描述
 		return super.defenseVerb();
 	}
 
 	@Override
+	//计算角色的伤害减免值（Damage Reduction）
 	public int drRoll() {
+		// 调用父类的drRoll方法，获取基础的护甲减伤值
 		int dr = super.drRoll();
 
+		// 如果有穿戴护甲
 		if (belongings.armor() != null) {
-			int armDr = Random.NormalIntRange( belongings.armor().DRMin(), belongings.armor().DRMax());
+			// 根据护甲的DRMin和DRMax属性随机生成一个护甲减伤值
+			int armDr = Random.NormalIntRange(belongings.armor().DRMin(), belongings.armor().DRMax());
+			// 如果角色的力量值小于护甲的力量要求
 			if (STR() < belongings.armor().STRReq()){
-				armDr -= 2*(belongings.armor().STRReq() - STR());
+				// 根据力量差值减少护甲减伤值
+				armDr -= 2 * (belongings.armor().STRReq() - STR());
 			}
+			// 如果护甲减伤值大于0，则增加到总的护甲减伤值中
 			if (armDr > 0) dr += armDr;
 		}
+
+		// 如果有装备武器且非空手战斗
 		if (belongings.weapon() != null && !RingOfForce.fightingUnarmed(this))  {
-			int wepDr = Random.NormalIntRange( 0 , belongings.weapon().defenseFactor( this ) );
+			// 根据武器的defenseFactor属性随机生成一个武器减伤值
+			int wepDr = Random.NormalIntRange(0, belongings.weapon().defenseFactor(this));
+			// 如果角色的力量值小于武器的力量要求
 			if (STR() < ((Weapon)belongings.weapon()).STRReq()){
-				wepDr -= 2*(((Weapon)belongings.weapon()).STRReq() - STR());
+				// 根据力量差值减少武器减伤值
+				wepDr -= 2 * (((Weapon)belongings.weapon()).STRReq() - STR());
 			}
+			// 如果武器减伤值大于0，则增加到总的护甲减伤值中
 			if (wepDr > 0) dr += wepDr;
 		}
 
+		// 如果具有HoldFast类的增益效果
 		if (buff(HoldFast.class) != null){
+			// 增加HoldFast类增益效果提供的额外护甲减伤值
 			dr += buff(HoldFast.class).armorBonus();
 		}
-		
+
+		// 返回最终的护甲减伤值
 		return dr;
 	}
-	
+
+
+/**
+ * 计算角色造成的伤害值
+ * @return 返回计算后的伤害值
+ */
 	@Override
 	public int damageRoll() {
 		KindOfWeapon wep = belongings.attackingWeapon();
+		KindOfWeapon axy = belongings.auxiliary();
 		int dmg;
 
+		// 如果非空手战斗
 		if (!RingOfForce.fightingUnarmed(this)) {
-			dmg = wep.damageRoll( this );
+			// 根据当前装备的武器进行伤害计算
+			dmg = wep.damageRoll(this) + axy.damageRoll(this);
 
+			// 如果不是远程武器，则增加武器伤害加成
 			if (!(wep instanceof MissileWeapon)) dmg += RingOfForce.armedDamageBonus(this);
 		} else {
+			// 如果是空手战斗
+			// 根据空手战斗造成的伤害计算
 			dmg = RingOfForce.damageRoll(this);
+
+			// 如果空手战斗可以获得武器增益效果
 			if (RingOfForce.unarmedGetsWeaponAugment(this)){
 				dmg = ((Weapon)belongings.attackingWeapon()).augment.damageFactor(dmg);
 			}
 		}
 
+		// 获取PhysicalEmpower增益效果
 		PhysicalEmpower emp = buff(PhysicalEmpower.class);
 		if (emp != null){
+			// 增加伤害值
 			dmg += emp.dmgBoost;
 			emp.left--;
+			// 如果增益效果次数用尽，则移除该增益效果
 			if (emp.left <= 0) {
 				emp.detach();
 			}
+			// 播放音效
 			Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG, 0.75f, 1.2f);
 		}
 
+		// 如果角色不是Duelist类、拥有WEAPON_RECHARGING天赋且具有重装或神器充能增益效果
 		if (heroClass != HeroClass.DUELIST
 				&& hasTalent(Talent.WEAPON_RECHARGING)
 				&& (buff(Recharging.class) != null || buff(ArtifactRecharge.class) != null)){
-			dmg = Math.round(dmg * 1.025f + (.025f*pointsInTalent(Talent.WEAPON_RECHARGING)));
+			// 根据天赋等级增加伤害值
+			dmg = Math.round(dmg * 1.025f + (.025f * pointsInTalent(Talent.WEAPON_RECHARGING)));
 		}
 
+		// 如果伤害值小于0，则将伤害值设为0
 		if (dmg < 0) dmg = 0;
+
+		// 返回最终的伤害值
 		return dmg;
 	}
-	
 	@Override
 	public float speed() {
 
@@ -650,7 +736,7 @@ public class Hero extends Char {
 		
 	}
 
-	@Override
+	@Override//用于判断角色是否能够进行意外袭击
 	public boolean canSurpriseAttack(){
 		KindOfWeapon w = belongings.attackingWeapon();
 		if (!(w instanceof Weapon))             return true;
@@ -660,7 +746,7 @@ public class Hero extends Char {
 
 		return super.canSurpriseAttack();
 	}
-
+	//用于判断角色是否能够攻击指定的敌人
 	public boolean canAttack(Char enemy){
 		if (enemy == null || pos == enemy.pos || !Actor.chars().contains(enemy)) {
 			return false;
@@ -2075,7 +2161,7 @@ public class Hero extends Char {
 			super.onAttackComplete();
 			return;
 		}
-		
+
 		AttackIndicator.target(enemy);
 		boolean wasEnemy = enemy.alignment == Alignment.ENEMY
 				|| (enemy instanceof Mimic && enemy.alignment == Alignment.NEUTRAL);

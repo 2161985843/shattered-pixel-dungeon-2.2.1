@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
+import com.shatteredpixel.shatteredpixeldungeon.items.AuxiliaryItems;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
@@ -59,7 +60,7 @@ public class Belongings implements Iterable<Item> {
 				}
 			}
 			if (Dungeon.hero != null && Dungeon.hero.belongings.secondWep != null){
-				//secondary weapons still occupy an inv. slot
+				//次要武器仍然占据一个inv.插槽
 				cap--;
 			}
 			return cap;
@@ -76,31 +77,43 @@ public class Belongings implements Iterable<Item> {
 	}
 
 	public KindOfWeapon weapon = null;
+	public KindOfWeapon auxiliary = null;
 	public Armor armor = null;
 	public Artifact artifact = null;
 	public KindofMisc misc = null;
 	public Ring ring = null;
 
-	//used when thrown weapons temporary become the current weapon
+	//投掷武器时使用的临时武器变成当前武器
 	public KindOfWeapon thrownWeapon = null;
 
-	//used to ensure that the duelist always uses the weapon she's using the ability of
+	//用来确保决斗者总是使用她所使用的武器
 	public KindOfWeapon abilityWeapon = null;
 
-	//used by the champion subclass
+	//冠军子类使用
 	public KindOfWeapon secondWep = null;
 
-	//*** these accessor methods are so that worn items can be affected by various effects/debuffs
-	// we still want to access the raw equipped items in cases where effects should be ignored though,
-	// such as when equipping something, showing an interface, or dealing with items from a dead hero
+	//***这些存取器方法是为了使磨损的物品可以受到各种效果/减影的影响
 
-	//normally the primary equipped weapon, but can also be a thrown weapon or an ability's weapon
+	//在应该忽略效果的情况下，我们仍然希望访问原始装备的物品，
+
+	//例如装备某物、显示界面或处理死去英雄的物品时
+
+	//通常是主要装备的武器，但也可以是投掷武器或能力武器
+	//包含了6个方法，每个方法都返回一个特定类型的物品，例如武器、防具、神器等。
 	public KindOfWeapon attackingWeapon(){
 		if (thrownWeapon != null) return thrownWeapon;
 		if (abilityWeapon != null) return abilityWeapon;
 		return weapon();
 	}
 
+	public KindOfWeapon auxiliary(){
+		boolean lostInvent = owner != null && owner.buff(LostInventory.class) != null;
+		if (!lostInvent || (auxiliary != null && auxiliary.keptThroughLostInventory())){
+			return auxiliary;
+		} else {
+			return null;
+		}
+	}
 	public KindOfWeapon weapon(){
 		boolean lostInvent = owner != null && owner.buff(LostInventory.class) != null;
 		if (!lostInvent || (weapon != null && weapon.keptThroughLostInventory())){
@@ -158,10 +171,11 @@ public class Belongings implements Iterable<Item> {
 	// ***
 	
 	private static final String WEAPON		= "weapon";
-	private static final String ARMOR		= "armor";
-	private static final String ARTIFACT   = "artifact";
-	private static final String MISC       = "misc";
-	private static final String RING       = "ring";
+	private static final String AUXILIARY	= "auxiliary";
+	private static final String ARMOR	    = "armor";
+	private static final String ARTIFACT    = "artifact";
+	private static final String MISC        = "misc";
+	private static final String RING        = "ring";
 
 	private static final String SECOND_WEP = "second_wep";
 
@@ -170,6 +184,7 @@ public class Belongings implements Iterable<Item> {
 		backpack.storeInBundle( bundle );
 		
 		bundle.put( WEAPON, weapon );
+		bundle.put( AUXILIARY, auxiliary );
 		bundle.put( ARMOR, armor );
 		bundle.put( ARTIFACT, artifact );
 		bundle.put( MISC, misc );
@@ -184,6 +199,9 @@ public class Belongings implements Iterable<Item> {
 		
 		weapon = (KindOfWeapon) bundle.get(WEAPON);
 		if (weapon() != null)       weapon().activate(owner);
+
+		auxiliary = (KindOfWeapon) bundle.get(AUXILIARY);
+		if (auxiliary() != null)       auxiliary().activate(owner);
 		
 		armor = (Armor)bundle.get( ARMOR );
 		if (armor() != null)        armor().activate( owner );
@@ -200,7 +218,7 @@ public class Belongings implements Iterable<Item> {
 		secondWep = (KindOfWeapon) bundle.get(SECOND_WEP);
 		if (secondWep() != null)    secondWep().activate(owner);
 	}
-	
+	//护甲
 	public static void preview( GamesInProgress.Info info, Bundle bundle ) {
 		if (bundle.contains( ARMOR )){
 			Armor armor = ((Armor)bundle.get( ARMOR ));
@@ -214,7 +232,7 @@ public class Belongings implements Iterable<Item> {
 		}
 	}
 
-	//ignores lost inventory debuff
+	//忽略丢失的库存debuff
 	public ArrayList<Bag> getBags(){
 		ArrayList<Bag> result = new ArrayList<>();
 
@@ -228,7 +246,7 @@ public class Belongings implements Iterable<Item> {
 
 		return result;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public<T extends Item> T getItem( Class<T> itemClass ) {
 
@@ -307,17 +325,21 @@ public class Belongings implements Iterable<Item> {
 		return result;
 	}
 
-	//triggers when a run ends, so ignores lost inventory effects
+	//当运行结束时触发，因此忽略丢失的库存影响
 	public void identify() {
 		for (Item item : this) {
 			item.identify(false);
 		}
 	}
-	
+	//观察并标识装备栏中的各种物品。
 	public void observe() {
 		if (weapon() != null) {
 			weapon().identify();
 			Badges.validateItemLevelAquired(weapon());
+		}
+		if (auxiliary() != null) {
+			auxiliary().identify();
+			Badges.validateItemLevelAquired(auxiliary());
 		}
 		if (armor() != null) {
 			armor().identify();
@@ -346,17 +368,17 @@ public class Belongings implements Iterable<Item> {
 		}
 		Item.updateQuickslot();
 	}
-	
+	//解除英雄装备栏中所有物品的诅咒
 	public void uncurseEquipped() {
-		ScrollOfRemoveCurse.uncurse( owner, armor(), weapon(), artifact(), misc(), ring(), secondWep());
+		ScrollOfRemoveCurse.uncurse( owner, auxiliary(),armor(), weapon(), artifact(), misc(), ring(), secondWep());
 	}
-	
+	//英雄的背包中随机选择一个未装备的物品
 	public Item randomUnequipped() {
 		if (owner.buff(LostInventory.class) != null) return null;
 
 		return Random.element( backpack.items );
 	}
-	
+	//用于对英雄装备栏中所有魔杖进行充能
 	public int charge( float charge ) {
 		
 		int count = 0;
@@ -373,14 +395,14 @@ public class Belongings implements Iterable<Item> {
 	public Iterator<Item> iterator() {
 		return new ItemIterator();
 	}
-	
+//内部类提供了一个迭代器，可以依次遍历物品栏中的所有物品，包括已装备的和背包中的。
 	private class ItemIterator implements Iterator<Item> {
 
 		private int index = 0;
 		
 		private Iterator<Item> backpackIterator = backpack.iterator();
 		
-		private Item[] equipped = {weapon, armor, artifact, misc, ring, secondWep};
+		private Item[] equipped = {weapon, auxiliary, armor, artifact, misc, ring, secondWep};
 		private int backpackIndex = equipped.length;
 		
 		@Override
@@ -428,6 +450,9 @@ public class Belongings implements Iterable<Item> {
 				break;
 			case 5:
 				equipped[5] = secondWep = null;
+				break;
+			case 6:
+				equipped[6] = auxiliary = null;
 				break;
 			default:
 				backpackIterator.remove();

@@ -274,6 +274,7 @@ public class MeleeWeapon extends Weapon {
 	}
 
 	public int tier;
+	public static boolean twohands;
 
 	@Override
 	public int min(int lvl) {

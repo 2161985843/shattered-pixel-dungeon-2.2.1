@@ -344,6 +344,9 @@ public class WndRanking extends WndTabbed {
 			if (stuff.weapon != null) {
 				addItem( stuff.weapon );
 			}
+			if (stuff.auxiliary != null) {
+				addItem( stuff.auxiliary );
+			}
 			if (stuff.armor != null) {
 				addItem( stuff.armor );
 			}

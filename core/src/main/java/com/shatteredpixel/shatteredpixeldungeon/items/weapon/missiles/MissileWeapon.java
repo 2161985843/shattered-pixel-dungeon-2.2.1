@@ -202,7 +202,7 @@ abstract public class MissileWeapon extends Weapon {
 
 	protected float perfectAccuracy(Char owner, Char target) {
 		if (Dungeon.level.adjacent(owner.pos, target.pos)) {
-			return (0.9f);
+			return (0.7f);
 		} else {
 			return 1.0f; // 返回百分百的命中率
 		}

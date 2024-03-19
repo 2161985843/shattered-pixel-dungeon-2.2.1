@@ -56,11 +56,11 @@ public class WndBag extends WndTabbed {
 	//only one bag window can appear at a time
 	public static Window INSTANCE;
 
-	protected static final int COLS_P   = 5;
-	protected static final int COLS_L   = 5;
+	protected static final int COLS_P   = 6;
+	protected static final int COLS_L   = 6;
 	
-	protected static int SLOT_WIDTH_P   = 28;
-	protected static int SLOT_WIDTH_L   = 28;
+	protected static int SLOT_WIDTH_P   = 26;
+	protected static int SLOT_WIDTH_L   = 26;
 
 	protected static int SLOT_HEIGHT_P	= 28;
 	protected static int SLOT_HEIGHT_L	= 28;
@@ -235,26 +235,28 @@ public class WndBag extends WndTabbed {
 	
 	protected void placeItems( Bag container ) {
 		
-		// Equipped items
+		// 配备的物品
 		Belongings stuff = Dungeon.hero.belongings;
 		placeItem( stuff.weapon != null ? stuff.weapon : new Placeholder( ItemSpriteSheet.WEAPON_HOLDER ) );
+		placeItem( stuff.auxiliary != null ? stuff.auxiliary : new Placeholder( ItemSpriteSheet.WEAPON_HOLDER ) );
 		placeItem( stuff.armor != null ? stuff.armor : new Placeholder( ItemSpriteSheet.ARMOR_HOLDER ) );
 		placeItem( stuff.artifact != null ? stuff.artifact : new Placeholder( ItemSpriteSheet.ARTIFACT_HOLDER ) );
 		placeItem( stuff.misc != null ? stuff.misc : new Placeholder( ItemSpriteSheet.SOMETHING ) );
 		placeItem( stuff.ring != null ? stuff.ring : new Placeholder( ItemSpriteSheet.RING_HOLDER ) );
 
+
 		int equipped = 5;
 
-		//the container itself if it's not the root backpack
+		//容器本身，如果不是根背包
 		if (container != Dungeon.hero.belongings.backpack){
 			placeItem(container);
-			count--; //don't count this one, as it's not actually inside of itself
+			count--; //不要把这个算在内，因为它实际上并不在自己的内部
 		} else if (stuff.secondWep != null) {
-			//second weapon always goes to the front of view on main bag
+			//第二把武器总是放在主包的前面
 			placeItem(stuff.secondWep);
 			equipped++;
 		}
-
+		//袋子里的物品，其他容器除外（底部有标签）
 		// Items in the bag, except other containers (they have tags at the bottom)
 		for (Item item : container.items.toArray(new Item[0])) {
 			if (!(item instanceof Bag)) {
@@ -263,8 +265,8 @@ public class WndBag extends WndTabbed {
 				count++;
 			}
 		}
-		
-		// Free Space
+
+		//可用空间
 		while ((count - equipped) < container.capacity()) {
 			placeItem( null );
 		}

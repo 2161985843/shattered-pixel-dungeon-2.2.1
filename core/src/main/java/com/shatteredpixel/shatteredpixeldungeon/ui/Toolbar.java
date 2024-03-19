@@ -104,7 +104,7 @@ public class Toolbar extends Component {
 			add( btnQuick[i] = new QuickslotTool(64, 0, 22, 24, i) );
 		}
 
-		//hidden button for quickslot selector keybind
+		//用于快速插槽选择器键绑定的隐藏按钮
 		add(new Button(){
 			@Override
 			protected void onClick() {
@@ -114,7 +114,7 @@ public class Toolbar extends Component {
 					if (cell != -1){
 						GameScene.handleCell(cell);
 					} else {
-						//couldn't auto-aim, just target the position and hope for the best.
+						//不能自动瞄准，只能瞄准位置并抱着最好的希望。
 						GameScene.handleCell( QuickSlotButton.lastTarget.pos );
 					}
 					return;
@@ -156,8 +156,9 @@ public class Toolbar extends Component {
 							if (item == null || Dungeon.quickslot.isPlaceholder(idx)
 									|| (Dungeon.hero.buff(LostInventory.class) != null && !item.keptThroughLostInventory())
 									|| alt){
-								//TODO would be nice to use a radial menu for this too
-								// Also a bunch of code could be moved out of here into subclasses of RadialMenu
+								//TODO也可以使用放射状菜单
+
+								//此外，一堆代码可以从这里移到RadialMenu的子类中
 								GameScene.selectItem(new WndBag.ItemSelector() {
 									@Override
 									public String textPrompt() {
@@ -247,7 +248,7 @@ public class Toolbar extends Component {
 			}
 		});
 
-		//hidden button for wait / pickup keybind
+		//隐藏的等待/拾取键绑定按钮
 		add(new Button(){
 			@Override
 			protected void onClick() {
@@ -255,7 +256,7 @@ public class Toolbar extends Component {
 					Dungeon.hero.waitOrPickup = true;
 					if ((Dungeon.level.heaps.get(Dungeon.hero.pos) != null || Dungeon.hero.canSelfTrample())
 						&& Dungeon.hero.handle(Dungeon.hero.pos)){
-						//trigger hold fast and patient strike here, even if the hero didn't specifically wait
+						//扳机保持住，耐心地在这里击球，即使英雄没有特别等待
 						if (Dungeon.hero.hasTalent(Talent.HOLD_FAST)){
 							Buff.affect(Dungeon.hero, HoldFast.class).pos = Dungeon.hero.pos;
 						}
@@ -390,7 +391,7 @@ public class Toolbar extends Component {
 		});
 		btnInventory.icon( 160, 0, 16, 16 );
 
-		//hidden button for inventory selector keybind
+		//库存选择器键绑定的隐藏按钮
 		add(new Button(){
 			@Override
 			protected void onClick() {
@@ -534,7 +535,7 @@ public class Toolbar extends Component {
 				right = btnQuick[i].left();
 			}
 
-			//swap button never appears on larger interface sizes
+			//交换按钮从不出现在较大的界面上
 
 			return;
 		}
@@ -576,7 +577,7 @@ public class Toolbar extends Component {
 				}
 
 				break;
-
+			//center=组但是。。好居中，所以我们所需要做的就是先发制人地把右侧打得更远。
 			//center = group but.. well.. centered, so all we need to do is pre-emptively set the right side further in.
 			case CENTER:
 				float toolbarWidth = btnWait.width() + btnSearch.width() + btnInventory.width();

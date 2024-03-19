@@ -30,6 +30,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Atest;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -47,101 +49,201 @@ abstract public class KindOfWeapon extends EquipableItem {
 
 	protected String hitSound = Assets.Sounds.HIT;
 	protected float hitSoundPitch = 1f;
-	
+
+
 	@Override
 	public void execute(Hero hero, String action) {
-		if (hero.subClass == HeroSubClass.CHAMPION && action.equals(AC_EQUIP)){
+		if (action.equals(AC_EQUIP)){
 			usesTargeting = false;
 			String primaryName = Messages.titleCase(hero.belongings.weapon != null ? hero.belongings.weapon.trueName() : Messages.get(KindOfWeapon.class, "empty"));
-			String secondaryName = Messages.titleCase(hero.belongings.secondWep != null ? hero.belongings.secondWep.trueName() : Messages.get(KindOfWeapon.class, "empty"));
+			String auxiliaryName = Messages.titleCase(hero.belongings.auxiliary != null ? hero.belongings.auxiliary.trueName() : Messages.get(KindOfWeapon.class, "empty"));
+			String secondaryName = Messages.titleCase( hero.belongings.secondWep != null ? hero.belongings.secondWep.trueName() : Messages.get(KindOfWeapon.class, "empty"));
+
 			if (primaryName.length() > 18) primaryName = primaryName.substring(0, 15) + "...";
 			if (secondaryName.length() > 18) secondaryName = secondaryName.substring(0, 15) + "...";
+			boolean value = true;
+			if (hero.subClass == HeroSubClass.CHAMPION) {
+				value=false;
+				GameScene.show(new WndOptions(
+						new ItemSprite(this),
+						Messages.titleCase(name()),
+						Messages.get(KindOfWeapon.class, "which_equip_msg"),
+						Messages.get(KindOfWeapon.class, "which_equip_primary", primaryName),
+						Messages.get(KindOfWeapon.class, "which_equip_auxiliary", auxiliaryName),
+						Messages.get(KindOfWeapon.class, "which_equip_secondary", secondaryName)
+				) {
+					@Override
+					protected void onSelect(int index) {
+						super.onSelect(index);
+						if (index == 0 || index == 1 || index == 2) {
+							// 除了装备自己，物品还将自己重新分配到快速插槽
+							// 这是一个特殊的情况，因为物品正在从库存中移除，但仍与英雄在一起。
+							int slot = Dungeon.quickslot.getSlot(KindOfWeapon.this);
+							slotOfUnequipped = -1;
+							if (index == 0 || index == 1) {
+								doEquip(hero);
+							} else {
+								equipSecondary(hero);
+							}
+							if (slot != -1) {
+								Dungeon.quickslot.setSlot(slot, KindOfWeapon.this);
+								updateQuickslot();
+								// 如果该物品没有快速插入，但它所更换的装备是
+								// 然后让物品占据未装备物品的快速插槽
+							} else if (slotOfUnequipped != -1 && defaultAction() != null) {
+								Dungeon.quickslot.setSlot(slotOfUnequipped, KindOfWeapon.this);
+								updateQuickslot();
+							}
+						}
+					}
+				});}
+			if (value) {
 			GameScene.show(new WndOptions(
 					new ItemSprite(this),
+
 					Messages.titleCase(name()),
 					Messages.get(KindOfWeapon.class, "which_equip_msg"),
 					Messages.get(KindOfWeapon.class, "which_equip_primary", primaryName),
-					Messages.get(KindOfWeapon.class, "which_equip_secondary", secondaryName)
+					Messages.get(KindOfWeapon.class, "which_equip_auxiliary", auxiliaryName)
+
 			){
 				@Override
 				protected void onSelect(int index) {
 					super.onSelect(index);
 					if (index == 0 || index == 1){
-						//In addition to equipping itself, item reassigns itself to the quickslot
-						//This is a special case as the item is being removed from inventory, but is staying with the hero.
+						//除了装备自己，物品还将自己重新分配到快速插槽
+						//这是一个特殊的情况，因为物品正在从库存中移除，但仍与英雄在一起。
 						int slot = Dungeon.quickslot.getSlot( KindOfWeapon.this );
 						slotOfUnequipped = -1;
-						if (index == 0) {
+						if (index == 0 ) {
 							doEquip(hero);
-						} else {
-							equipSecondary(hero);
+						}if ( index == 1) {
+
+							doEquip(hero);
+						}else  {
+							doEquip(hero);
 						}
 						if (slot != -1) {
 							Dungeon.quickslot.setSlot( slot, KindOfWeapon.this );
 							updateQuickslot();
-						//if this item wasn't quickslotted, but the item it is replacing as equipped was
-						//then also have the item occupy the unequipped item's quickslot
+							//如果该物品没有快速插入，但它所更换的装备是
+							//然后让物品占据未装备物品的快速插槽
 						} else if (slotOfUnequipped != -1 && defaultAction() != null) {
 							Dungeon.quickslot.setSlot( slotOfUnequipped, KindOfWeapon.this );
 							updateQuickslot();
 						}
 					}
 				}
-			});
+			});}
 		} else {
 			super.execute(hero, action);
 		}
+
 	}
 
 	@Override
 	public boolean isEquipped( Hero hero ) {
-		return hero.belongings.weapon() == this || hero.belongings.secondWep() == this;
+		return hero.belongings.weapon() == this || hero.belongings.secondWep() == this|| hero.belongings.auxiliary() == this;
 	}
-	
+
 	@Override
-	public boolean doEquip( Hero hero ) {
+	public boolean doEquip(Hero hero) {
+		// 记录英雄是否在装备前已经拥有该物品
 		boolean wasInInv = hero.belongings.contains(this);
-		detachAll( hero.belongings.backpack );
-		
-		if (hero.belongings.weapon == null || hero.belongings.weapon.doUnequip( hero, true )) {
-			
-			hero.belongings.weapon = this;
-			activate( hero );
-			Talent.onItemEquipped(hero, this);
-			Badges.validateDuelistUnlock();
-			ActionIndicator.refresh();
-			updateQuickslot();
+		boolean shouldEquip = false;
+		// 将物品从英雄的背包中移除
+		boolean isTwoHanded = MeleeWeapon.twohands;
 
-			cursedKnown = true;
-			if (cursed) {
-				equipCursed( hero );
-				GLog.n( Messages.get(KindOfWeapon.class, "equip_cursed") );
+		if ((this instanceof MeleeWeapon) && MeleeWeapon.twohands){
+			if (hero.belongings.weapon == null && hero.belongings.auxiliary == null) shouldEquip = true;
+
+			else if (hero.belongings.weapon == null) {
+				shouldEquip = hero.belongings.auxiliary.doUnequip(hero, true);
 			}
+			else if (hero.belongings.auxiliary == null) {
+				shouldEquip = hero.belongings.weapon.doUnequip(hero, true);
+			}
+			else {
+				shouldEquip = hero.belongings.weapon.doUnequip(hero, true) && hero.belongings.auxiliary.doUnequip(hero, true);
+			}
+			if (shouldEquip) {
+				hero.belongings.weapon = this;
+				hero.belongings.auxiliary = null;
+				GLog.n(Messages.get(KindOfWeapon.class, "equip_cursed1"));
+			}else {
+				collect(hero.belongings.backpack);
+				return false;
+			}
+		}else {
+			if (hero.belongings.weapon == null) {
+				hero.belongings.weapon = this;
+			}
+			else if (hero.belongings.auxiliary == null ) {
+				hero.belongings.auxiliary = this;
+			}
+			else if (hero.belongings.weapon.doUnequip(hero, true)) {
+				hero.belongings.weapon = this;
+			}
+			else if (hero.belongings.weapon != null &&hero.belongings.auxiliary != null && hero.belongings.auxiliary.doUnequip(hero, true)) {
+				hero.belongings.auxiliary = this;
+			}
+			// 如果上述两个条件都不满足，则将物品放回英雄的背包中，并返回false表示装备失败
+			else {
+				collect(hero.belongings.backpack);
+				return false;
+			}
+		}
 
-			if (wasInInv && hero.hasTalent(Talent.SWIFT_EQUIP)) {
-				if (hero.buff(Talent.SwiftEquipCooldown.class) == null){
-					hero.spendAndNext(-hero.cooldown());
-					Buff.affect(hero, Talent.SwiftEquipCooldown.class, 19f)
-							.secondUse = hero.pointsInTalent(Talent.SWIFT_EQUIP) == 2;
-					GLog.i(Messages.get(this, "swift_equip"));
-				} else if (hero.buff(Talent.SwiftEquipCooldown.class).hasSecondUse()) {
-					hero.spendAndNext(-hero.cooldown());
-					hero.buff(Talent.SwiftEquipCooldown.class).secondUse = false;
-					GLog.i(Messages.get(this, "swift_equip"));
-				} else {
-					hero.spendAndNext(TIME_TO_EQUIP);
-				}
+
+
+
+
+		// 激活物品效果
+		activate(hero);
+		// 触发装备物品时的天赋效果
+		Talent.onItemEquipped(hero, this);
+		// 验证是否解锁了某些成就
+		Badges.validateDuelistUnlock();
+		// 刷新动作指示器
+		ActionIndicator.refresh();
+		// 更新快速使用的物品槽
+		updateQuickslot();
+
+		// 标记该物品是否有诅咒效果
+		cursedKnown = true;
+
+		// 如果该物品有诅咒效果，则进行相应处理
+		if (cursed) {
+			if (this == hero.belongings.weapon) {
+				equipCursed(hero);
+				GLog.n(Messages.get(KindOfWeapon.class, "equip_cursed"));
+			} else if (this == hero.belongings.auxiliary) {
+				equipCursed(hero);
+				GLog.n(Messages.get(KindOfWeapon.class, "equip_cursed"));
+			}
+		}
+
+		// 如果英雄具有快速装备天赋，则根据相应逻辑来处理快速装备的行为
+		if (wasInInv && hero.hasTalent(Talent.SWIFT_EQUIP)) {
+			if (hero.buff(Talent.SwiftEquipCooldown.class) == null) {
+				hero.spendAndNext(-hero.cooldown());
+				Buff.affect(hero, Talent.SwiftEquipCooldown.class, 19f)
+						.secondUse = hero.pointsInTalent(Talent.SWIFT_EQUIP) == 2;
+				GLog.i(Messages.get(this, "swift_equip"));
+			} else if (hero.buff(Talent.SwiftEquipCooldown.class).hasSecondUse()) {
+				hero.spendAndNext(-hero.cooldown());
+				hero.buff(Talent.SwiftEquipCooldown.class).secondUse = false;
+				GLog.i(Messages.get(this, "swift_equip"));
 			} else {
 				hero.spendAndNext(TIME_TO_EQUIP);
 			}
-			return true;
-			
 		} else {
-			
-			collect( hero.belongings.backpack );
-			return false;
+			hero.spendAndNext(TIME_TO_EQUIP);
 		}
+		// 返回true表示装备成功
+		return true;
 	}
+
 
 	public boolean equipSecondary( Hero hero ){
 		boolean wasInInv = hero.belongings.contains(this);
@@ -190,6 +292,7 @@ abstract public class KindOfWeapon extends EquipableItem {
 	@Override
 	public boolean doUnequip( Hero hero, boolean collect, boolean single ) {
 		boolean second = hero.belongings.secondWep == this;
+		boolean first = hero.belongings.weapon == this;
 
 		if (second){
 			//do this first so that the item can go to a full inventory
@@ -198,8 +301,11 @@ abstract public class KindOfWeapon extends EquipableItem {
 
 		if (super.doUnequip( hero, collect, single )) {
 
-			if (!second){
+			if (first){
 				hero.belongings.weapon = null;
+			} else {
+				// 如果是第二武器，则将辅助武器置为null
+				hero.belongings.auxiliary = null;
 			}
 			return true;
 
@@ -209,6 +315,7 @@ abstract public class KindOfWeapon extends EquipableItem {
 				hero.belongings.secondWep = this;
 			}
 			return false;
+
 
 		}
 	}

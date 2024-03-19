@@ -74,16 +74,17 @@ public abstract class EquipableItem extends Item {
 		super.execute( hero, action );
 
 		if (action.equals( AC_EQUIP )) {
-			//In addition to equipping itself, item reassigns itself to the quickslot
-			//This is a special case as the item is being removed from inventory, but is staying with the hero.
+			//除了装备自己，物品还将自己重新分配到快速插槽
+			//这是一个特殊的情况，因为物品正在从库存中移除，但仍与英雄在一起。
 			int slot = Dungeon.quickslot.getSlot( this );
 			slotOfUnequipped = -1;
 			doEquip(hero);
 			if (slot != -1) {
 				Dungeon.quickslot.setSlot( slot, this );
 				updateQuickslot();
-			//if this item wasn't quickslotted, but the item it is replacing as equipped was
-			//then also have the item occupy the unequipped item's quickslot
+				//如果这个物品没有快速开槽，但它正在更换的装备是
+
+		//然后让物品占据未装备物品的快速插槽
 			} else if (slotOfUnequipped != -1 && defaultAction() != null) {
 				Dungeon.quickslot.setSlot( slotOfUnequipped, this );
 				updateQuickslot();
@@ -140,7 +141,7 @@ public abstract class EquipableItem extends Item {
 
 		slotOfUnequipped = Dungeon.quickslot.getSlot(this);
 
-		//temporarily keep this item so it can be collected
+		//暂时保留此项目以便收集
 		boolean wasKept = keptThoughLostInvent;
 		keptThoughLostInvent = true;
 		if (!collect || !collect( hero.belongings.backpack )) {

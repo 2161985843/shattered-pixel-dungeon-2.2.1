@@ -49,11 +49,11 @@ public class pistol extends MeleeWeapon {
         return Math.max(0, dmg);
     }
     public int STRReq(int lvl) {
-        return STRReq(3, lvl); //tier 1
+        return STRReq(0, lvl); //tier 1
     }
     @Override
     public int max(int lvl) {
-        int dmg = 1 + (int)(Dungeon.hero.lvl/2.5f)
+        int dmg = 45 + (int)(Dungeon.hero.lvl/2.5f)
                 + 2*RingOfSharpshooting.levelDamageBonus(Dungeon.hero)
                 + (curseInfusionBonus ? 2 + Dungeon.hero.lvl/15 : 0);
         return Math.max(0, dmg);
@@ -128,6 +128,7 @@ public class pistol extends MeleeWeapon {
                 hero.busy();
                 hero.sprite.operate(hero.pos);
                 GLog.i(Messages.get(pistol.class, "charge1"));
+
             }
         }
         if (action.equals(AC_SHOOl)) {
@@ -193,7 +194,7 @@ public class pistol extends MeleeWeapon {
 
                     // 或者你可以将力量值的增加乘以一个修正系数，然后加到伤害值上
                     double strModifier = exStr; // 修正系数可以根据需要调整
-
+                    //damage = (int) (exStr + strModifier);
                 }
             }
             return damage;

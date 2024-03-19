@@ -45,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.He
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Shockwave;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
@@ -55,6 +56,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibili
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
@@ -66,6 +68,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.grimm.Pistol1;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.grimm.pistol;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Atest;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
@@ -75,6 +78,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKn
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RightClickMenu;
 import com.watabou.utils.DeviceCompat;
 
 public enum HeroClass {
@@ -169,11 +173,22 @@ public enum HeroClass {
 		pistol bow = new pistol();
 		bow.identify().collect();
 		Dungeon.quickslot.setSlot(2, bow);
+
+
+		Atest bow2 = new Atest();
+		bow2.identify().collect();
+
+		RingOfAccuracy bow3 = new RingOfAccuracy();
+		RingOfAccuracy bow4 = new RingOfAccuracy();
+		RingOfAccuracy bow5 = new RingOfAccuracy();
+		bow3.identify().collect();
+		bow5.identify().collect();
+		bow4.identify().collect();
+
+
 		Pistol1 bow1 = new Pistol1();
 		bow1.identify().collect();
 		Dungeon.quickslot.setSlot(3, bow1);
-		ScrollOfUpgrade up = new ScrollOfUpgrade();
-		up.quantity(3).collect();
 
 
 		new CurseInfusion().collect();
@@ -234,6 +249,17 @@ public enum HeroClass {
 
 		(hero.belongings.weapon = new Rapier()).identify();
 		hero.belongings.weapon.activate(hero);
+
+		TengusMask bow = new TengusMask();
+		bow.identify().collect();
+		Dungeon.quickslot.setSlot(2, bow);
+
+		pistol bow1 = new pistol();
+		bow1.identify().collect();
+		Dungeon.quickslot.setSlot(3, bow);
+
+		Atest bow2 = new Atest();
+		bow2.identify().collect();
 
 		ThrowingSpike spikes = new ThrowingSpike();
 		spikes.quantity(2).collect();

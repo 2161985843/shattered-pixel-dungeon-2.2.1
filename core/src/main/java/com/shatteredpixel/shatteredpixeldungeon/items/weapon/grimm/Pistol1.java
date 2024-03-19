@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.grimm;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
@@ -14,7 +15,7 @@ import com.watabou.utils.Bundle;
 import java.util.ArrayList;
 
 public class Pistol1  extends pistol {
-    private static final String AC_SHOO =" SHOO" ;
+    private static final String AC_SHOO ="SHOO" ;
 
     {
         image  = ItemSpriteSheet.WORN_SHORTSWORD;
@@ -27,7 +28,7 @@ public class Pistol1  extends pistol {
         bones = false;
     }
 
-        public String targetingPrompt() {
+    public String targetingPrompt() {
             return Messages.get(this, "prompt");
         }
     @Override
@@ -38,8 +39,6 @@ public class Pistol1  extends pistol {
     }
 
     public int weaponLevel  = -1;
-
-
 
     public int lvl;
     public void restoreFromBundle(Bundle bundle) {
@@ -69,8 +68,12 @@ public class Pistol1  extends pistol {
         }
         bundle.put("lvl", this.lvl);
     }
-
-
+    public int proc(Char charR, Char charR2, int i) {
+        if (charR2.HP <= i) {
+            this.lvl++;
+        }
+        return super.proc(charR, charR2, i);
+    }
     public int image() {
         int i = this.lvl;
         if (i >= 3) {
@@ -100,7 +103,6 @@ public class Pistol1  extends pistol {
             if (action.equals(AC_SHOO)) {
                 if(level() >= 0){
                     lvl ++;
-
                     GLog.i(Messages.get(pistol.class, "charge2"+weaponLevel));
                 }
 
@@ -112,7 +114,6 @@ public class Pistol1  extends pistol {
     //返回一个描述武器信息的字符串。
     public String info() {
         String info = desc();
-
         info += ("\n\n" + Messages.get( this, "dj", (this.lvl),(this.lvl),(this.lvl)));
         info += ("_"+this.lvl+"_");
         info += "\n\n" + Messages.get( pistol.class, "stats",
@@ -130,7 +131,7 @@ public class Pistol1  extends pistol {
         } else if (Dungeon.hero.STR() > STRReq()){
             info += " " + Messages.get(Weapon.class, "excess_str", Dungeon.hero.STR() - STRReq());
         }
-//
+
         switch (augment) {
             case SPEED:
                 info += "\n\n" + Messages.get(Weapon.class, "faster");
