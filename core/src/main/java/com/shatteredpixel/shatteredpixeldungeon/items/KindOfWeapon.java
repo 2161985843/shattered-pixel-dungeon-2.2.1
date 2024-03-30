@@ -30,7 +30,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Atest;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -49,11 +48,12 @@ abstract public class KindOfWeapon extends EquipableItem {
 
 	protected String hitSound = Assets.Sounds.HIT;
 	protected float hitSoundPitch = 1f;
+	private boolean equipFull =false;;
 
 
 	@Override
 	public void execute(Hero hero, String action) {
-		if (action.equals(AC_EQUIP)){
+		if (action.equals(AC_EQUIP)&&hero.subClass == HeroSubClass.CHAMPION){
 			usesTargeting = false;
 			String primaryName = Messages.titleCase(hero.belongings.weapon != null ? hero.belongings.weapon.trueName() : Messages.get(KindOfWeapon.class, "empty"));
 			String auxiliaryName = Messages.titleCase(hero.belongings.auxiliary != null ? hero.belongings.auxiliary.trueName() : Messages.get(KindOfWeapon.class, "empty"));
@@ -61,9 +61,8 @@ abstract public class KindOfWeapon extends EquipableItem {
 
 			if (primaryName.length() > 18) primaryName = primaryName.substring(0, 15) + "...";
 			if (secondaryName.length() > 18) secondaryName = secondaryName.substring(0, 15) + "...";
-			boolean value = true;
-			if (hero.subClass == HeroSubClass.CHAMPION) {
-				value=false;
+
+
 				GameScene.show(new WndOptions(
 						new ItemSprite(this),
 						Messages.titleCase(name()),
@@ -97,45 +96,8 @@ abstract public class KindOfWeapon extends EquipableItem {
 						}
 					}
 				});}
-			if (value) {
-			GameScene.show(new WndOptions(
-					new ItemSprite(this),
 
-					Messages.titleCase(name()),
-					Messages.get(KindOfWeapon.class, "which_equip_msg"),
-					Messages.get(KindOfWeapon.class, "which_equip_primary", primaryName),
-					Messages.get(KindOfWeapon.class, "which_equip_auxiliary", auxiliaryName)
-
-			){
-				@Override
-				protected void onSelect(int index) {
-					super.onSelect(index);
-					if (index == 0 || index == 1){
-						//除了装备自己，物品还将自己重新分配到快速插槽
-						//这是一个特殊的情况，因为物品正在从库存中移除，但仍与英雄在一起。
-						int slot = Dungeon.quickslot.getSlot( KindOfWeapon.this );
-						slotOfUnequipped = -1;
-						if (index == 0 ) {
-							doEquip(hero);
-						}if ( index == 1) {
-
-							doEquip(hero);
-						}else  {
-							doEquip(hero);
-						}
-						if (slot != -1) {
-							Dungeon.quickslot.setSlot( slot, KindOfWeapon.this );
-							updateQuickslot();
-							//如果该物品没有快速插入，但它所更换的装备是
-							//然后让物品占据未装备物品的快速插槽
-						} else if (slotOfUnequipped != -1 && defaultAction() != null) {
-							Dungeon.quickslot.setSlot( slotOfUnequipped, KindOfWeapon.this );
-							updateQuickslot();
-						}
-					}
-				}
-			});}
-		} else {
+		 else {
 			super.execute(hero, action);
 		}
 
@@ -150,54 +112,80 @@ abstract public class KindOfWeapon extends EquipableItem {
 	public boolean doEquip(Hero hero) {
 		// 记录英雄是否在装备前已经拥有该物品
 		boolean wasInInv = hero.belongings.contains(this);
-		boolean shouldEquip = false;
-		// 将物品从英雄的背包中移除
-		boolean isTwoHanded = MeleeWeapon.twohands;
+		detachAll( hero.belongings.backpack );
+		boolean shouldEquip=false;
 
-		if ((this instanceof MeleeWeapon) && MeleeWeapon.twohands){
-			if (hero.belongings.weapon == null && hero.belongings.auxiliary == null) shouldEquip = true;
+		String primaryName = Messages.titleCase(hero.belongings.weapon != null ? hero.belongings.weapon.trueName() : Messages.get(KindOfWeapon.class, "empty"));
+		String auxiliaryName = Messages.titleCase(hero.belongings.auxiliary != null ? hero.belongings.auxiliary.trueName() : Messages.get(KindOfWeapon.class, "empty"));
+
+		if ((this instanceof MeleeWeapon) && ((MeleeWeapon) this).twohands) {
+			if (hero.belongings.weapon == null && hero.belongings.auxiliary == null)
+				shouldEquip = true;
 
 			else if (hero.belongings.weapon == null) {
 				shouldEquip = hero.belongings.auxiliary.doUnequip(hero, true);
-			}
-			else if (hero.belongings.auxiliary == null) {
+			} else if (hero.belongings.auxiliary == null) {
 				shouldEquip = hero.belongings.weapon.doUnequip(hero, true);
-			}
-			else {
+			} else {
 				shouldEquip = hero.belongings.weapon.doUnequip(hero, true) && hero.belongings.auxiliary.doUnequip(hero, true);
 			}
 			if (shouldEquip) {
 				hero.belongings.weapon = this;
 				hero.belongings.auxiliary = null;
-				GLog.n(Messages.get(KindOfWeapon.class, "equip_cursed1"));
-			}else {
+				GLog.n(Messages.get(KindOfWeapon.class, "unequip_dd"));
+			} else {
+				this.equipFull = true;
 				collect(hero.belongings.backpack);
 				return false;
 			}
-		}else {
-			if (hero.belongings.weapon == null) {
+		} else {
+			if (hero.belongings.weapon == null ) {
 				hero.belongings.weapon = this;
-			}
-			else if (hero.belongings.auxiliary == null ) {
+
+			} else if (hero.belongings.weapon instanceof MeleeWeapon && ((MeleeWeapon) hero.belongings.weapon).twohands
+					&&hero.belongings.weapon.doUnequip(hero, true)) {
+				hero.belongings.weapon = this;
+				GLog.n(Messages.get(KindOfWeapon.class, "twohands_unequip"));
+
+			}else if (hero.belongings.auxiliary == null) {
+				hero.belongings.auxiliary = this;
+
+			} else if (hero.belongings.weapon != null &&  hero.belongings.weapon.doUnequip(hero, true)) {
+				hero.belongings.weapon = this;
+
+			} else if (hero.belongings.auxiliary != null && hero.belongings.auxiliary.doUnequip(hero, true)) {
 				hero.belongings.auxiliary = this;
 			}
-			else if (hero.belongings.weapon.doUnequip(hero, true)) {
-				hero.belongings.weapon = this;
-			}
-			else if (hero.belongings.weapon != null &&hero.belongings.auxiliary != null && hero.belongings.auxiliary.doUnequip(hero, true)) {
-				hero.belongings.auxiliary = this;
-			}
-			// 如果上述两个条件都不满足，则将物品放回英雄的背包中，并返回false表示装备失败
+
 			else {
 				collect(hero.belongings.backpack);
 				return false;
 			}
 		}
 
-
-
-
-
+//		if (this.equipFull){
+//		GameScene.show(new WndOptions(
+//				new ItemSprite(this),
+//				Messages.titleCase(name()),
+//				Messages.get(KindOfWeapon.class, "which_equip_msg"),
+//				Messages.get(KindOfWeapon.class, "which_equip_primary", primaryName),
+//				Messages.get(KindOfWeapon.class, "which_equip_auxiliary", auxiliaryName)
+//
+//		) {
+//			@Override
+//			protected void onSelect(int index) {
+//				super.onSelect(index);
+//				if (index == 0 || index == 1 || index == 2) {
+//					slotOfUnequipped = -1;
+//					if (index == 0 || index == 1) {
+//						doEquip(hero);
+//					} else {
+//						equipSecondary(hero);
+//					}
+//				}
+//			}
+//		});
+//}
 		// 激活物品效果
 		activate(hero);
 		// 触发装备物品时的天赋效果

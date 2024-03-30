@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Ripple;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
@@ -56,6 +57,7 @@ import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.ColorMath;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
@@ -137,6 +139,19 @@ public class SewerLevel extends RegularLevel {
 
 	@Override
 	protected void createMobs() {
+		int depth = Dungeon.depth;
+
+//		if (depth == 1) {
+//			int randomNeighborIndex = this.entrance + PathFinder.NEIGHBOURS8[Random.Int(7)];
+//			DM100 qoo = new DM100();
+//			qoo.pos = randomNeighborIndex;
+//			this.mobs.add(qoo);
+//		}
+//		if (depth == 1) {
+//			DM100 eer = new DM100();
+//			eer.pos = randomRespawnCell(Dungeon.hero);
+//			this.mobs.add(eer);
+//		}
 		Ghost.Quest.spawn( this, roomExit );
 		super.createMobs();
 	}

@@ -103,6 +103,7 @@ public class Belongings implements Iterable<Item> {
 	public KindOfWeapon attackingWeapon(){
 		if (thrownWeapon != null) return thrownWeapon;
 		if (abilityWeapon != null) return abilityWeapon;
+		if (auxiliary != null) return auxiliary;
 		return weapon();
 	}
 

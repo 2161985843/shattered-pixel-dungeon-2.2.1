@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
@@ -658,15 +660,23 @@ public class Hero extends Char {
 	public int damageRoll() {
 		KindOfWeapon wep = belongings.attackingWeapon();
 		KindOfWeapon axy = belongings.auxiliary();
-		int dmg;
+		int dmg=0;
 
 		// 如果非空手战斗
 		if (!RingOfForce.fightingUnarmed(this)) {
 			// 根据当前装备的武器进行伤害计算
-			dmg = wep.damageRoll(this) + axy.damageRoll(this);
+			if (wep != null && axy != null) {
+				dmg = wep.damageRoll(this) + axy.damageRoll(this);
+			} else if (wep != null) {
+				dmg = wep.damageRoll(this);
+			} else if (axy != null) {
+				dmg = axy.damageRoll(this);
+			}
+
 
 			// 如果不是远程武器，则增加武器伤害加成
 			if (!(wep instanceof MissileWeapon)) dmg += RingOfForce.armedDamageBonus(this);
+
 		} else {
 			// 如果是空手战斗
 			// 根据空手战斗造成的伤害计算
@@ -706,36 +716,45 @@ public class Hero extends Char {
 		// 返回最终的伤害值
 		return dmg;
 	}
+	/**
+	 * 计算角色的移动速度
+	 * @return 返回计算后的移动速度
+	 */
 	@Override
 	public float speed() {
+		float speed = super.speed(); // 获取基础移动速度
 
-		float speed = super.speed();
-
+		// 根据RingOfHaste增益效果计算移动速度
 		speed *= RingOfHaste.speedMultiplier(this);
-		
+
+		// 如果角色穿戴了护甲
 		if (belongings.armor() != null) {
-			speed = belongings.armor().speedFactor(this, speed);
+			speed = belongings.armor().speedFactor(this, speed); // 根据护甲的速度因子调整移动速度
 		}
-		
+
+		// 获取Momentum增益效果
 		Momentum momentum = buff(Momentum.class);
 		if (momentum != null){
+			// 根据Momentum增益效果调整移动速度
 			((HeroSprite)sprite).sprint( momentum.freerunning() ? 1.5f : 1f );
 			speed *= momentum.speedMultiplier();
 		} else {
 			((HeroSprite)sprite).sprint( 1f );
 		}
 
+		// 获取NaturesPower增益效果
 		NaturesPower.naturesPowerTracker natStrength = buff(NaturesPower.naturesPowerTracker.class);
 		if (natStrength != null){
+			// 根据NaturesPower增益效果调整移动速度
 			speed *= (2f + 0.25f*pointsInTalent(Talent.GROWING_POWER));
 		}
 
+		// 根据AscensionChallenge修改英雄移动速度
 		speed = AscensionChallenge.modifyHeroSpeed(speed);
-		
-		return speed;
-		
-	}
 
+		// 返回最终的移动速度
+		return speed;
+	}
 	@Override//用于判断角色是否能够进行意外袭击
 	public boolean canSurpriseAttack(){
 		KindOfWeapon w = belongings.attackingWeapon();
@@ -757,7 +776,7 @@ public class Hero extends Char {
 			return true;
 		}
 
-		KindOfWeapon wep = Dungeon.hero.belongings.attackingWeapon();
+		KindOfWeapon wep = hero.belongings.attackingWeapon();
 
 		if (wep != null){
 			return wep.canReach(this, enemy.pos);
@@ -1246,8 +1265,8 @@ public class Hero extends Char {
 						//1 hunger spent total
 						if (Dungeon.level.map[action.dst] == Terrain.WALL_DECO){
 							DarkGold gold = new DarkGold();
-							if (gold.doPickUp( Dungeon.hero )) {
-								DarkGold existing = Dungeon.hero.belongings.getItem(DarkGold.class);
+							if (gold.doPickUp( hero )) {
+								DarkGold existing = hero.belongings.getItem(DarkGold.class);
 								if (existing != null && existing.quantity()%5 == 0){
 									if (existing.quantity() >= 40) {
 										GLog.p(Messages.get(DarkGold.class, "you_now_have", existing.quantity()));
@@ -1410,7 +1429,7 @@ public class Hero extends Char {
 			Buff.affect(this, HoldFast.class).pos = pos;
 		}
 		if (hasTalent(Talent.PATIENT_STRIKE)){
-			Buff.affect(Dungeon.hero, Talent.PatientStrikeTracker.class).pos = Dungeon.hero.pos;
+			Buff.affect(hero, Talent.PatientStrikeTracker.class).pos = hero.pos;
 		}
 		if (!fullRest) {
 			if (sprite != null) {
@@ -2066,9 +2085,9 @@ public class Hero extends Char {
 		Dungeon.observe();
 		GameScene.updateFog();
 				
-		Dungeon.hero.belongings.identify();
+		hero.belongings.identify();
 
-		int pos = Dungeon.hero.pos;
+		int pos = hero.pos;
 
 		ArrayList<Integer> passable = new ArrayList<>();
 		for (Integer ofs : PathFinder.NEIGHBOURS8) {
@@ -2079,7 +2098,7 @@ public class Hero extends Char {
 		}
 		Collections.shuffle( passable );
 
-		ArrayList<Item> items = new ArrayList<>(Dungeon.hero.belongings.backpack.items);
+		ArrayList<Item> items = new ArrayList<>(hero.belongings.backpack.items);
 		for (Integer cell : passable) {
 			if (items.isEmpty()) {
 				break;

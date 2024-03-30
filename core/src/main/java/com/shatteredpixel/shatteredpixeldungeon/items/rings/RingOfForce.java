@@ -206,7 +206,7 @@ public class RingOfForce extends Ring {
 			|| hero.buff(MonkEnergy.MonkAbility.UnarmedAbilityTracker.class) != null){
 			return true;
 		}
-		if (hero.belongings.thrownWeapon != null || hero.belongings.abilityWeapon != null){
+		if (hero.belongings.thrownWeapon != null || hero.belongings.abilityWeapon != null|| hero.belongings.auxiliary != null){
 			return false;
 		}
 		BrawlersStance stance = hero.buff(BrawlersStance.class);
