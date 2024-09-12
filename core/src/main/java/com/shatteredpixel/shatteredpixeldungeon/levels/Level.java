@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -43,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PinCushion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RevealedArea;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Shadows;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.properties.Bornclairvoyant;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -103,7 +106,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public abstract class Level implements Bundlable {
-	
+
 	public static enum Feeling {
 		NONE,
 		CHASM,
@@ -170,6 +173,7 @@ public abstract class Level implements Bundlable {
 	public int color2 = 0x88CC44;
 
 	private static final String VERSION     = "version";
+	private static final String pitSign     = "pitSign";
 	private static final String WIDTH       = "width";
 	private static final String HEIGHT      = "height";
 	private static final String MAP			= "map";
@@ -186,22 +190,21 @@ public abstract class Level implements Bundlable {
 	private static final String BLOBS		= "blobs";
 	private static final String FEELING		= "feeling";
 
-	public void create() {
+	public void create() {//力量药水固定生成
 
 		Random.pushGenerator( Dungeon.seedCurDepth() );
 
-		//TODO maybe just make this part of RegularLevel?
+		//TODO 也许只是让这成为 RegularLevel 的一部分？
 		if (!Dungeon.bossLevel() && Dungeon.branch == 0) {
 
 			addItemToSpawn(Generator.random(Generator.Category.FOOD));
-
 			if (Dungeon.posNeeded()) {
 				Dungeon.LimitedDrops.STRENGTH_POTIONS.count++;
 				addItemToSpawn( new PotionOfStrength() );
 			}
 			if (Dungeon.souNeeded()) {
 				Dungeon.LimitedDrops.UPGRADE_SCROLLS.count++;
-				//every 2nd scroll of upgrade is removed with forbidden runes challenge on
+				//每 2 次升级滚动都会被移除，并开启禁止符文挑战
 				//TODO while this does significantly reduce this challenge's levelgen impact, it doesn't quite remove it
 				//for 0 levelgen impact, we need to do something like give the player all SOU, but nerf them
 				//or give a random scroll (from a separate RNG) instead of every 2nd SOU
@@ -213,7 +216,7 @@ public abstract class Level implements Bundlable {
 				Dungeon.LimitedDrops.ARCANE_STYLI.count++;
 				addItemToSpawn( new Stylus() );
 			}
-			//one scroll of transmutation is guaranteed to spawn somewhere on chapter 2-4
+			//一个嬗变卷轴保证会在第 2-4 章的某个地方生成
 			int enchChapter = (int)((Dungeon.seed / 10) % 3) + 1;
 			if ( Dungeon.depth / 5 == enchChapter &&
 					Dungeon.seed % 4 + 1 == Dungeon.depth % 5){
@@ -225,8 +228,8 @@ public abstract class Level implements Bundlable {
 			}
 			
 			if (Dungeon.depth > 1) {
-				//50% chance of getting a level feeling
-				//~7.15% chance for each feeling
+				//50%几率获得水平感
+				//~7.15% 每种感觉的几率
 				switch (Random.Int( 14 )) {
 					case 0:
 						feeling = Feeling.CHASM;
@@ -257,7 +260,7 @@ public abstract class Level implements Bundlable {
 		}
 		
 		do {
-			width = height = length = 0;
+			width = height = length =0 ;
 
 			transitions = new ArrayList<>();
 
@@ -326,7 +329,7 @@ public abstract class Level implements Bundlable {
 	public void restoreFromBundle( Bundle bundle ) {
 
 		version = bundle.getInt( VERSION );
-		
+
 		//saves from before v1.2.3 are not supported
 		if (version < ShatteredPixelDungeon.v1_2_3){
 			throw new RuntimeException("old save");
@@ -358,7 +361,7 @@ public abstract class Level implements Bundlable {
 				transitions.add(new LevelTransition(
 						this,
 						bundle.getInt("entrance"),
-						Dungeon.depth == 1 ? LevelTransition.Type.SURFACE : LevelTransition.Type.REGULAR_ENTRANCE));
+						Dungeon.depth ==0 ? LevelTransition.Type.SURFACE : LevelTransition.Type.REGULAR_ENTRANCE));
 			}
 			if (bundle.contains("exit")){
 				transitions.add(new LevelTransition(this, bundle.getInt("exit"), LevelTransition.Type.REGULAR_EXIT));
@@ -405,7 +408,7 @@ public abstract class Level implements Bundlable {
 				mobs.add( mob );
 			}
 		}
-		
+
 		collection = bundle.getCollection( BLOBS );
 		for (Bundlable b : collection) {
 			Blob blob = (Blob)b;
@@ -609,7 +612,7 @@ public abstract class Level implements Bundlable {
 		return items;
 	}
 
-	public Group addVisuals() {
+	public Group addVisuals() {//添加可视化粒子效果
 		if (visuals == null || visuals.parent == null){
 			visuals = new Group();
 		} else {
@@ -645,7 +648,7 @@ public abstract class Level implements Bundlable {
 
 	public int mobCount(){
 		float count = 0;
-		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+		for (Mob mob : level.mobs.toArray(new Mob[0])){
 			if (mob.alignment == Char.Alignment.ENEMY && !mob.properties().contains(Char.Property.MINIBOSS)) {
 				count += mob.spawningWeight();
 			}
@@ -685,17 +688,17 @@ public abstract class Level implements Bundlable {
 		@Override
 		protected boolean act() {
 
-			if (Dungeon.level.mobCount() < Dungeon.level.mobLimit()) {
+			if (level.mobCount() < level.mobLimit()) {
 
-				if (Dungeon.level.spawnMob(12)){
-					spend(Dungeon.level.respawnCooldown());
+				if (level.spawnMob(12)){
+					spend(level.respawnCooldown());
 				} else {
 					//try again in 1 turn
 					spend(TICK);
 				}
 
 			} else {
-				spend(Dungeon.level.respawnCooldown());
+				spend(level.respawnCooldown());
 			}
 
 			return true;
@@ -703,7 +706,7 @@ public abstract class Level implements Bundlable {
 
 		protected void resetCooldown(){
 			spend(-cooldown());
-			spend(Dungeon.level.respawnCooldown());
+			spend(level.respawnCooldown());
 		}
 	}
 
@@ -711,12 +714,12 @@ public abstract class Level implements Bundlable {
 		if (Statistics.amuletObtained){
 			if (Dungeon.depth == 1){
 				//very fast spawns on floor 1! 0/2/4/6/8/10/12, etc.
-				return (Dungeon.level.mobCount()) * (TIME_TO_RESPAWN / 25f);
+				return (level.mobCount()) * (TIME_TO_RESPAWN / 25f);
 			} else {
 				//respawn time is 5/5/10/15/20/25/25, etc.
-				return Math.round(GameMath.gate( TIME_TO_RESPAWN/10f, Dungeon.level.mobCount() * (TIME_TO_RESPAWN / 10f), TIME_TO_RESPAWN / 2f));
+				return Math.round(GameMath.gate( TIME_TO_RESPAWN/10f, level.mobCount() * (TIME_TO_RESPAWN / 10f), TIME_TO_RESPAWN / 2f));
 			}
-		} else if (Dungeon.level.feeling == Feeling.DARK){
+		} else if (level.feeling == Feeling.DARK){
 			return 2*TIME_TO_RESPAWN/3f;
 		} else {
 			return TIME_TO_RESPAWN;
@@ -756,7 +759,7 @@ public abstract class Level implements Bundlable {
 
 			cell = Random.Int( length() );
 
-		} while ((Dungeon.level == this && heroFOV[cell])
+		} while ((level == this && heroFOV[cell])
 				|| !passable[cell]
 				|| (Char.hasProp(ch, Char.Property.LARGE) && !openSpace[cell])
 				|| Actor.findChar( cell ) != null);
@@ -887,7 +890,7 @@ public abstract class Level implements Bundlable {
 	}
 	
 	public static void set( int cell, int terrain ){
-		set( cell, terrain, Dungeon.level );
+		set( cell, terrain, level );
 	}
 	
 	public static void set( int cell, int terrain, Level level ) {
@@ -929,8 +932,8 @@ public abstract class Level implements Bundlable {
 
 		if (item == null || Challenges.isItemBlocked(item)){
 
-			//create a dummy heap, give it a dummy sprite, don't add it to the game, and return it.
-			//effectively nullifies whatever the logic calling this wants to do, including dropping items.
+			//创建一个虚拟堆，给它一个虚拟精灵，不要将其添加到游戏中，然后返回它。
+			//有效地取消了调用此函数的逻辑想要执行的任何操作，包括删除项目。
 			Heap heap = new Heap();
 			ItemSprite sprite = heap.sprite = new ItemSprite();
 			sprite.link(heap);
@@ -942,10 +945,10 @@ public abstract class Level implements Bundlable {
 		if (heap == null) {
 			
 			heap = new Heap();
-			heap.seen = Dungeon.level == this && heroFOV[cell];
+			heap.seen = level == this && heroFOV[cell];
 			heap.pos = cell;
 			heap.drop(item);
-			if (map[cell] == Terrain.CHASM || (Dungeon.level != null && pit[cell])) {
+			if (map[cell] == Terrain.CHASM || (level != null && pit[cell])) {
 				Dungeon.dropToChasm( item );
 				GameScene.discard( heap );
 			} else {
@@ -965,7 +968,7 @@ public abstract class Level implements Bundlable {
 			heap.drop(item);
 		}
 		
-		if (Dungeon.level != null && ShatteredPixelDungeon.scene() instanceof GameScene) {
+		if (level != null && ShatteredPixelDungeon.scene() instanceof GameScene) {
 			pressCell( cell );
 		}
 		
@@ -1042,7 +1045,7 @@ public abstract class Level implements Bundlable {
 	public boolean setCellToWater( boolean includeTraps, int cell ){
 		Point p = cellToPoint(cell);
 
-		//if a custom tilemap is over that cell, don't put water there
+		//如果自定义切片地图位于该单元格上，请不要在那里放水
 		for (CustomTilemap cust : customTiles){
 			Point custPoint = new Point(p);
 			custPoint.x -= cust.tileX;
@@ -1066,14 +1069,34 @@ public abstract class Level implements Bundlable {
 		} else if (includeTraps && (terr == Terrain.SECRET_TRAP ||
 				terr == Terrain.TRAP || terr == Terrain.INACTIVE_TRAP)){
 			set(cell, Terrain.WATER);
-			Dungeon.level.traps.remove(cell);
+			level.traps.remove(cell);
 			GameScene.updateMap(cell);
 			return true;
 		}
 
 		return false;
 	}
-	
+	public void generateRandomWater( int cell) {
+		int pos = 0;
+		ArrayList<Integer> visibleValid = new ArrayList<>();
+		ArrayList<Integer> notVisibleValid = new ArrayList<>();
+		ArrayList<Integer> notSeenValid = new ArrayList<>();
+		if (!notSeenValid.isEmpty()){
+			pos = Random.element(notSeenValid);
+		} else if (!notVisibleValid.isEmpty()){
+			pos = Random.element(notVisibleValid);
+		} else if (!visibleValid.isEmpty()){
+			pos = Random.element(visibleValid);
+		}
+		// 随机生成水块
+		for (int i = 0; i < cell; i++) {
+			 // 如果当前位置是空地
+				set(pos, Terrain.SIGN); // 将该位置设置为告示牌
+				GameScene.updateMap(pos); // 更新地图
+
+		}
+	}
+
 	public int fallCell( boolean fallIntoPit ) {
 		int result;
 		do {
@@ -1117,7 +1140,7 @@ public abstract class Level implements Bundlable {
 				return;
 			}
 			
-			//characters which are not the hero or a sheep 'soft' press cells
+			//不是英雄或绵羊的角色“软”压细胞
 			pressCell( ch.pos, ch instanceof Hero || ch instanceof Sheep);
 		} else {
 			if (map[ch.pos] == Terrain.DOOR){
@@ -1130,13 +1153,13 @@ public abstract class Level implements Bundlable {
 		}
 	}
 	
-	//public method for forcing the hard press of a cell. e.g. when an item lands on it
+	//强制硬按单元格的公共方法。例如，当物品落在它上面时
 	public void pressCell( int cell ){
 		pressCell( cell, true );
 	}
 	
 	//a 'soft' press ignores hidden traps
-	//a 'hard' press triggers all things
+	//“硬”按下会触发所有事情
 	private void pressCell( int cell, boolean hard ) {
 
 		Trap trap = null;
@@ -1229,31 +1252,31 @@ public abstract class Level implements Bundlable {
 		if (sighted) {
 			boolean[] blocking = null;
 
-			if (modifiableBlocking == null || modifiableBlocking.length != Dungeon.level.losBlocking.length){
-				modifiableBlocking = new boolean[Dungeon.level.losBlocking.length];
+			if (modifiableBlocking == null || modifiableBlocking.length != level.losBlocking.length){
+				modifiableBlocking = new boolean[level.losBlocking.length];
 			}
 			
 			if ((c instanceof Hero && ((Hero) c).subClass == HeroSubClass.WARDEN)
 				|| c instanceof YogFist.SoiledFist) {
 				if (blocking == null) {
-					System.arraycopy(Dungeon.level.losBlocking, 0, modifiableBlocking, 0, modifiableBlocking.length);
+					System.arraycopy(level.losBlocking, 0, modifiableBlocking, 0, modifiableBlocking.length);
 					blocking = modifiableBlocking;
 				}
 				for (int i = 0; i < blocking.length; i++){
-					if (blocking[i] && (Dungeon.level.map[i] == Terrain.HIGH_GRASS || Dungeon.level.map[i] == Terrain.FURROWED_GRASS)){
+					if (blocking[i] && (level.map[i] == Terrain.HIGH_GRASS || level.map[i] == Terrain.FURROWED_GRASS)){
 						blocking[i] = false;
 					}
 				}
 			}
 
 			if (c.alignment != Char.Alignment.ALLY
-					&& Dungeon.level.blobs.containsKey(SmokeScreen.class)
-					&& Dungeon.level.blobs.get(SmokeScreen.class).volume > 0) {
+					&& level.blobs.containsKey(SmokeScreen.class)
+					&& level.blobs.get(SmokeScreen.class).volume > 0) {
 				if (blocking == null) {
-					System.arraycopy(Dungeon.level.losBlocking, 0, modifiableBlocking, 0, modifiableBlocking.length);
+					System.arraycopy(level.losBlocking, 0, modifiableBlocking, 0, modifiableBlocking.length);
 					blocking = modifiableBlocking;
 				}
-				Blob s = Dungeon.level.blobs.get(SmokeScreen.class);
+				Blob s = level.blobs.get(SmokeScreen.class);
 				for (int i = 0; i < blocking.length; i++){
 					if (!blocking[i] && s.cur[i] > 0){
 						blocking[i] = true;
@@ -1262,14 +1285,17 @@ public abstract class Level implements Bundlable {
 			}
 
 			if (blocking == null){
-				blocking = Dungeon.level.losBlocking;
+				blocking = level.losBlocking;
 			}
 			
 			int viewDist = c.viewDistance;
 			if (c instanceof Hero){
 				viewDist *= 1f + 0.25f*((Hero) c).pointsInTalent(Talent.FARSIGHT);
+
 			}
-			
+			if (Dungeon.hero.buff(Bornclairvoyant.class) != null){
+				viewDist *= 1f + 0.25f*23f;
+			}
 			ShadowCaster.castShadow( cx, cy, fieldOfView, blocking, viewDist );
 		} else {
 			BArray.setFalse(fieldOfView);
@@ -1349,6 +1375,18 @@ public abstract class Level implements Bundlable {
 						}
 					}
 				}
+
+			}else if (c.buff( Bornclairvoyant.class ) != null){
+				Hero h = (Hero) c;
+				int range = 2;
+				for (Mob mob : mobs) {
+					int p = mob.pos;
+					if (!fieldOfView[p] && distance(c.pos, p) <= range) {
+						for (int i : PathFinder.NEIGHBOURS9) {
+							heroMindFov[mob.pos + i] = true;
+						}
+					}
+				}
 			}
 			
 			if (c.buff( Awareness.class ) != null) {
@@ -1378,7 +1416,7 @@ public abstract class Level implements Bundlable {
 						|| m instanceof SpiritHawk.HawkAlly){
 					if (m.fieldOfView == null || m.fieldOfView.length != length()){
 						m.fieldOfView = new boolean[length()];
-						Dungeon.level.updateFieldOfView( m, m.fieldOfView );
+						level.updateFieldOfView( m, m.fieldOfView );
 					}
 					BArray.or(heroMindFov, m.fieldOfView, heroMindFov);
 				}
@@ -1423,7 +1461,7 @@ public abstract class Level implements Bundlable {
 	public boolean adjacent( int a, int b ) {
 		return distance( a, b ) == 1;
 	}
-	
+
 	//uses pythagorean theorum for true distance, as if there was no movement grid
 	public float trueDistance(int a, int b){
 		int ax = a % width();
@@ -1507,6 +1545,8 @@ public abstract class Level implements Bundlable {
 				return Messages.get(Level.class, "bookshelf_name");
 			case Terrain.ALCHEMY:
 				return Messages.get(Level.class, "alchemy_name");
+			case Terrain.SIGN:
+				return Messages.get(Level.class, "sign_name");
 			default:
 				return Messages.get(Level.class, "default_name");
 		}
@@ -1546,6 +1586,8 @@ public abstract class Level implements Bundlable {
 				return Messages.get(Level.class, "alchemy_desc");
 			case Terrain.EMPTY_WELL:
 				return Messages.get(Level.class, "empty_well_desc");
+			case Terrain.SIGN:
+				return Messages.get(Level.class, "sign_desc");
 			default:
 				return "";
 		}
