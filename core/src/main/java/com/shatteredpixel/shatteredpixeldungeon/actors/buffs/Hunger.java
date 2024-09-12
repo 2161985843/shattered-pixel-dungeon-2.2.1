@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -32,7 +33,9 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 
 public class Hunger extends Buff implements Hero.Doom {
 
@@ -83,8 +86,14 @@ public class Hunger extends Buff implements Hero.Doom {
 				if (partialDamage > 1){
 					target.damage( (int)partialDamage, this);
 					partialDamage -= (int)partialDamage;
+					// 有20%的概率给敌人施加debuff效果
+					if (Random.Int(2) == 0) {shouldHandleMessage=true;
+						Buff.append( hero, Weakness.class,8F );
+						GLog.n( Messages.get(this, "ss") );
+
+					}
 				}
-				
+
 			} else {
 
 				float newLevel = level + STEP;
@@ -109,7 +118,7 @@ public class Hunger extends Buff implements Hero.Doom {
 				level = newLevel;
 
 			}
-			
+
 			spend( target.buff( Shadows.class ) == null ? STEP : STEP * 1.5f );
 
 		} else {
