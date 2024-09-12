@@ -3,11 +3,9 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.grimm;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
@@ -18,33 +16,38 @@ public class Pistol1  extends pistol {
     private static final String AC_SHOO ="SHOO" ;
 
     {
-        image  = ItemSpriteSheet.WORN_SHORTSWORD;
+        image  = ItemSpriteSheet.GUN_pistol;
 
 
         hitSoundPitch = 1.1f;
         usesTargeting=true;
-        tier = 4;
+        tier = 1;
 
         bones = false;
     }
+
 
     public String targetingPrompt() {
             return Messages.get(this, "prompt");
         }
     @Override
     public int level() {//计算灵魂弓的等级
+
         int level = Dungeon.hero == null ? 0 : Dungeon.hero.lvl;
         if (curseInfusionBonus) level += 3+ level/6;
         return level;
     }
 
     public int weaponLevel  = -1;
-
+    public  int i = this.lvl;
+    public void level2() {//计算灵魂弓的等级
+        this.i++;
+    }
     public int lvl;
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
         this.image = ItemSpriteSheet.ARTIFACT_SANDALS;
-        int i = this.lvl;
+
         if (i >= 1000) {
             this.image = ItemSpriteSheet.ARTIFACT_SANDALS;
         } else if (i >= 750) {
