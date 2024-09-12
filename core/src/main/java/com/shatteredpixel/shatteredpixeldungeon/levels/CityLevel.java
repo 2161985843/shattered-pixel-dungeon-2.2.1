@@ -125,7 +125,6 @@ public class CityLevel extends RegularLevel {
 	@Override
 	protected void createMobs() {
 		Imp.Quest.spawn( this );
-		
 		super.createMobs();
 	}
 	
@@ -136,6 +135,7 @@ public class CityLevel extends RegularLevel {
 				return Messages.get(CityLevel.class, "water_name");
 			case Terrain.HIGH_GRASS:
 				return Messages.get(CityLevel.class, "high_grass_name");
+
 			default:
 				return super.tileName( tile );
 		}
@@ -158,6 +158,8 @@ public class CityLevel extends RegularLevel {
 				return Messages.get(CityLevel.class, "statue_desc");
 			case Terrain.BOOKSHELF:
 				return Messages.get(CityLevel.class, "bookshelf_desc");
+			case Terrain.RUINS:
+				return Messages.get(CityLevel.class, "ruins_desc");
 			default:
 				return super.tileDesc( tile );
 		}

@@ -258,7 +258,7 @@ public class MagesStaff extends MeleeWeapon {
 
 		//if the staff's level is being overridden by the wand, preserve 1 upgrade
 		if (wand.trueLevel() >= this.trueLevel() && this.trueLevel() > 0) targetLevel++;
-		
+
 		level(targetLevel);
 		this.wand = wand;
 		updateWand(false);
@@ -278,7 +278,7 @@ public class MagesStaff extends MeleeWeapon {
 			Dungeon.quickslot.setSlot( slot, this );
 			updateQuickslot();
 		}
-		
+
 		Badges.validateItemLevelAquired(this);
 
 		return this;
@@ -321,7 +321,7 @@ public class MagesStaff extends MeleeWeapon {
 
 		return this;
 	}
-	
+
 	public void updateWand(boolean levelled){
 		if (wand != null) {
 			int curCharges = wand.curCharges;
@@ -397,7 +397,7 @@ public class MagesStaff extends MeleeWeapon {
 	public int value() {
 		return 0;
 	}
-	
+
 	@Override
 	public Weapon enchant(Enchantment ench) {
 		if (curseInfusionBonus && (ench == null || !ench.curse())){
@@ -406,7 +406,7 @@ public class MagesStaff extends MeleeWeapon {
 		}
 		return super.enchant(ench);
 	}
-	
+
 	private final WndBag.ItemSelector itemSelector = new WndBag.ItemSelector() {
 
 		@Override

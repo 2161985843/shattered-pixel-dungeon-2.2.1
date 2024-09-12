@@ -133,7 +133,9 @@ public abstract class Char extends Actor {
 	
 	public int HT;
 	public int HP;
-	
+
+
+	public boolean nothingness=true;
 	protected float baseSpeed	= 1;
 	protected PathFinder.Path path;
 
@@ -883,7 +885,9 @@ public abstract class Char extends Actor {
 	public synchronized LinkedHashSet<Buff> buffs() {
 		return new LinkedHashSet<>(buffs);
 	}
-	
+	public synchronized LinkedHashSet<Buff> itemse() {
+		return new LinkedHashSet<>(buffs);
+	}
 	@SuppressWarnings("unchecked")
 	//returns all buffs assignable from the given buff class
 	public synchronized <T extends Buff> HashSet<T> buffs( Class<T> c ) {

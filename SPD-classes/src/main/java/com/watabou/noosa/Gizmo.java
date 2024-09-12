@@ -27,7 +27,7 @@ public class Gizmo {
 	public boolean alive;
 	public boolean active;
 	public boolean visible;
-	
+
 	public Group parent;
 	
 	public Camera camera;

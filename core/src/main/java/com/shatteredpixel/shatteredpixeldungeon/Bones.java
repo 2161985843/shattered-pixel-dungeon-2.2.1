@@ -50,13 +50,13 @@ public class Bones {
 	
 	public static void leave() {
 
-		//remains will usually drop on the floor the hero died on
-		// but are capped at 5 floors above the lowest depth reached (even when ascending)
+		//遗骸通常会掉落在英雄死去的地板上
+		//但上限为最低深度以上 5 层（即使在上升时）
 		depth = Math.max(Dungeon.depth, Statistics.deepestFloor-5);
 
 		branch = Dungeon.branch;
 
-		//daily runs do not interact with remains
+		//每日跑步不与遗骸相互作用
 		if (Dungeon.daily) {
 			depth = branch = -1;
 			return;
@@ -237,10 +237,10 @@ public class Bones {
 	private static boolean lootAtCurLevel(){
 		if (branch == Dungeon.branch) {
 			if (branch == 0) {
-				//always match depth exactly for main path
+				//始终与主路径的深度精确匹配
 				return depth == Dungeon.depth;
 			} else if (branch == 1) {
-				//just match the region for quest sub-floors
+				//只需匹配任务底层的区域即可
 				return depth/5 == Dungeon.depth/5;
 			}
 		}

@@ -33,6 +33,7 @@ public class LevelTransition extends Rect implements Bundlable {
 
 	public enum Type {
 		SURFACE,
+		CUS,
 		REGULAR_ENTRANCE,
 		REGULAR_EXIT,
 		BRANCH_ENTRANCE,
@@ -80,8 +81,11 @@ public class LevelTransition extends Rect implements Bundlable {
 				break;
 			case SURFACE:
 				destDepth = 0;
-				destBranch = 0;
+				destBranch =0;
 				destType = null;
+				break;
+			case CUS:
+
 				break;
 		}
 	}

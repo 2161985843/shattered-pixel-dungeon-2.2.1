@@ -36,12 +36,12 @@ import com.watabou.utils.Point;
 import java.util.ArrayList;
 import java.util.Collection;
 
-//shops probably shouldn't extend special room, because of cases like this.
+//商店可能不应该扩大特殊空间，因为这样的情况。
 public class ImpShopRoom extends ShopRoom {
 
 	private boolean impSpawned = false;
 
-	//force a certain size here to guarantee enough room for 48 items, and the same center space
+	//这里强制一定的尺寸，以保证有足够的空间容纳 48 个项目，以及相同的中心空间
 	@Override
 	public int minWidth() {
 		return 9;
@@ -59,8 +59,8 @@ public class ImpShopRoom extends ShopRoom {
 
 	@Override
 	public void paint(Level level) {
-		//this room isn't actually filled in until the city boss is defeated, at the earliest
-		//but we want to decide the items as part of levelgen
+		//这个房间实际上直到城市老板被打败后才会被填满，最早
+		//但是我们想将项目作为 LevelGen 的一部分来决定
 		if (itemsToSpawn == null) {
 			itemsToSpawn = generateItems();
 		}

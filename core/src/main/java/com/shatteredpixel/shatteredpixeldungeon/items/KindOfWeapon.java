@@ -62,7 +62,6 @@ abstract public class KindOfWeapon extends EquipableItem {
 			if (primaryName.length() > 18) primaryName = primaryName.substring(0, 15) + "...";
 			if (secondaryName.length() > 18) secondaryName = secondaryName.substring(0, 15) + "...";
 
-
 				GameScene.show(new WndOptions(
 						new ItemSprite(this),
 						Messages.titleCase(name()),
@@ -147,7 +146,7 @@ abstract public class KindOfWeapon extends EquipableItem {
 				hero.belongings.weapon = this;
 				GLog.n(Messages.get(KindOfWeapon.class, "twohands_unequip"));
 
-			}else if (hero.belongings.auxiliary == null) {
+			}else if (hero.belongings.auxiliary == null&& ((MeleeWeapon) this).support) {
 				hero.belongings.auxiliary = this;
 
 			} else if (hero.belongings.weapon != null &&  hero.belongings.weapon.doUnequip(hero, true)) {
@@ -162,30 +161,6 @@ abstract public class KindOfWeapon extends EquipableItem {
 				return false;
 			}
 		}
-
-//		if (this.equipFull){
-//		GameScene.show(new WndOptions(
-//				new ItemSprite(this),
-//				Messages.titleCase(name()),
-//				Messages.get(KindOfWeapon.class, "which_equip_msg"),
-//				Messages.get(KindOfWeapon.class, "which_equip_primary", primaryName),
-//				Messages.get(KindOfWeapon.class, "which_equip_auxiliary", auxiliaryName)
-//
-//		) {
-//			@Override
-//			protected void onSelect(int index) {
-//				super.onSelect(index);
-//				if (index == 0 || index == 1 || index == 2) {
-//					slotOfUnequipped = -1;
-//					if (index == 0 || index == 1) {
-//						doEquip(hero);
-//					} else {
-//						equipSecondary(hero);
-//					}
-//				}
-//			}
-//		});
-//}
 		// 激活物品效果
 		activate(hero);
 		// 触发装备物品时的天赋效果

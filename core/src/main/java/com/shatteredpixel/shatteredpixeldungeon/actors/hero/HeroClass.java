@@ -50,6 +50,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
+import com.shatteredpixel.shatteredpixeldungeon.items.devtools.generator.LazyTest;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
@@ -102,9 +103,10 @@ public enum HeroClass {
 
 		Item i = new ClothArmor().identify();
 		if (!Challenges.isItemBlocked(i)) hero.belongings.armor = (ClothArmor)i;
-
+		new LazyTest().collect();
 		i = new Food();
 		if (!Challenges.isItemBlocked(i)) i.collect();
+
 
 		new VelvetPouch().collect();
 		Dungeon.LimitedDrops.VELVET_POUCH.drop();
@@ -169,37 +171,15 @@ public enum HeroClass {
 		stones.quantity(3).collect();
 		Dungeon.quickslot.setSlot(0, stones);
 
-
 		pistol bow = new pistol();
 		bow.identify().collect();
 		Dungeon.quickslot.setSlot(2, bow);
 
-
-		Atest bow2 = new Atest();
-		bow2.identify().collect();
-
-		RingOfAccuracy bow3 = new RingOfAccuracy();
-		RingOfAccuracy bow4 = new RingOfAccuracy();
-		RingOfAccuracy bow5 = new RingOfAccuracy();
-		bow3.identify().collect();
-		bow5.identify().collect();
-		bow4.identify().collect();
-
-
-		Pistol1 bow1 = new Pistol1();
-		bow1.identify().collect();
-		Dungeon.quickslot.setSlot(3, bow1);
-
-
-		new CurseInfusion().collect();
-
+		new LazyTest().collect();
 
 		if (hero.belongings.armor != null){
 			hero.belongings.armor.affixSeal(new BrokenSeal());
 		}
-
-		new PotionOfHealing().identify();
-		new ScrollOfRage().identify();
 	}
 
 	private static void initMage( Hero hero ) {
@@ -249,17 +229,6 @@ public enum HeroClass {
 
 		(hero.belongings.weapon = new Rapier()).identify();
 		hero.belongings.weapon.activate(hero);
-
-		TengusMask bow = new TengusMask();
-		bow.identify().collect();
-		Dungeon.quickslot.setSlot(2, bow);
-
-		pistol bow1 = new pistol();
-		bow1.identify().collect();
-		Dungeon.quickslot.setSlot(3, bow);
-
-		Atest bow2 = new Atest();
-		bow2.identify().collect();
 
 		ThrowingSpike spikes = new ThrowingSpike();
 		spikes.quantity(2).collect();

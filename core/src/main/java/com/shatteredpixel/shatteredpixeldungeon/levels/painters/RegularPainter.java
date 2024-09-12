@@ -478,5 +478,5 @@ public abstract class RegularPainter extends Painter {
 			l.map[trapPos] = trap.visible ? Terrain.TRAP : Terrain.SECRET_TRAP;
 		}
 	}
-	
+
 }

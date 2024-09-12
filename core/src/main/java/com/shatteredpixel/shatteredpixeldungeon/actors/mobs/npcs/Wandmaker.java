@@ -57,6 +57,9 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
+/**
+ * 老杖匠
+ */
 public class Wandmaker extends NPC {
 
 	{

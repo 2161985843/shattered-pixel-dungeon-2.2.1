@@ -93,72 +93,77 @@ public class AlchemyScene extends PixelScene {
 	@Override
 	public void create() {
 		super.create();
-		
+
+		// 创建一个新的SkinnedBlock对象用于表示水面
 		water = new SkinnedBlock(
 				Camera.main.width, Camera.main.height,
 				Dungeon.level.waterTex() ){
-			
+
 			@Override
 			protected NoosaScript script() {
-				return NoosaScriptNoLighting.get();
+				return NoosaScriptNoLighting.get(); // 设置脚本为没有光照
 			}
-			
+
 			@Override
 			public void draw() {
-				//water has no alpha component, this improves performance
-				Blending.disable();
-				super.draw();
-				Blending.enable();
+				// 水面没有透明度组件，这样可以提高性能
+				Blending.disable(); // 关闭混合模式
+				super.draw(); // 调用父类的绘制方法
+				Blending.enable(); // 重新启用混合模式
 			}
 		};
-		water.autoAdjust = true;
-		add(water);
-		
+		water.autoAdjust = true; // 自动调整水面的显示
+		add(water); // 将水面添加到场景中
+
+// 创建一个渐变色的Image对象
 		Image im = new Image(TextureCache.createGradient(0x66000000, 0x88000000, 0xAA000000, 0xCC000000, 0xFF000000));
-		im.angle = 90;
-		im.x = Camera.main.width;
-		im.scale.x = Camera.main.height/5f;
+		im.angle = 90; // 设置图片角度
+		im.x = Camera.main.width; // 设置图片位置
+		im.scale.x = Camera.main.height / 5f; // 设置图片缩放
 		im.scale.y = Camera.main.width;
-		add(im);
+		add(im); // 将图片添加到场景中
 
+// 创建一个Emitter对象用于生成气泡
 		bubbleEmitter = new Emitter();
-		bubbleEmitter.pos(0, 0, Camera.main.width, Camera.main.height);
-		bubbleEmitter.autoKill = false;
-		add(bubbleEmitter);
+		bubbleEmitter.pos(0, 0, Camera.main.width, Camera.main.height); // 设置气泡发射区域
+		bubbleEmitter.autoKill = false; // 不自动消失
+		add(bubbleEmitter); // 将气泡发射器添加到场景中
 
-		lowerBubbles = new Emitter();
-		add(lowerBubbles);
-		
-		RenderedTextBlock title = PixelScene.renderTextBlock( Messages.get(this, "title"), 9 );
-		title.hardlight(Window.TITLE_COLOR);
+		lowerBubbles = new Emitter(); // 创建另一个Emitter对象
+		add(lowerBubbles); // 添加到场景中
+
+// 渲染标题文本块
+		RenderedTextBlock title = PixelScene.renderTextBlock(Messages.get(this, "title"), 9);
+		title.hardlight(Window.TITLE_COLOR); // 设置文本颜色
 		title.setPos(
 				(Camera.main.width - title.width()) / 2f,
 				(20 - title.height()) / 2f
 		);
-		align(title);
-		add(title);
-		
-		int w = 50 + Camera.main.width/2;
-		int left = (Camera.main.width - w)/2;
-		
-		int pos = (Camera.main.height - 100)/2;
-		
+		align(title); // 对齐文本
+		add(title); // 将标题添加到场景中
+
+// 渲染描述文本块
+		int w = 50 + Camera.main.width / 2;
+		int left = (Camera.main.width - w) / 2;
+		int pos = (Camera.main.height - 100) / 2;
 		RenderedTextBlock desc = PixelScene.renderTextBlock(6);
-		desc.maxWidth(w);
-		desc.text( Messages.get(AlchemyScene.class, "text") );
-		desc.setPos(left + (w - desc.width())/2, pos);
-		add(desc);
-		
+		desc.maxWidth(w); // 设置文本最大宽度
+		desc.text(Messages.get(AlchemyScene.class, "text")); // 设置文本内容
+		desc.setPos(left + (w - desc.width()) / 2, pos);
+		add(desc); // 将描述文本添加到场景中
+
 		pos += desc.height() + 6;
 
+// 创建背景图像
 		NinePatch inputBG = Chrome.get(Chrome.Type.TOAST_TR);
 		inputBG.x = left + 6;
 		inputBG.y = pos;
-		inputBG.size(BTN_SIZE+8, 3*BTN_SIZE + 4 + 8);
-		add(inputBG);
+		inputBG.size(BTN_SIZE + 8, 3 * BTN_SIZE + 4 + 8);
+		add(inputBG); // 将背景图像添加到场景中
 
 		pos += 4;
 
+// 创建和添加输入按钮
 		synchronized (inputs) {
 			for (int i = 0; i < inputs.length; i++) {
 				inputs[i] = new InputButton();
@@ -168,119 +173,120 @@ public class AlchemyScene extends PixelScene {
 			}
 		}
 
-		for (int i = 0; i < inputs.length; i++){
+// 创建并配置CombineButton和OutputSlot对象
+		for (int i = 0; i < inputs.length; i++) {
 			combines[i] = new CombineButton(i);
 			combines[i].enable(false);
 
 			outputs[i] = new OutputSlot();
 			outputs[i].item(null);
 
-			if (i == 0){
-				//first ones are always visible
-				combines[i].setRect(left + (w-30)/2f, inputs[1].top()+5, 30, inputs[1].height()-10);
+			if (i == 0) {
+				// 第一个按钮总是可见
+				combines[i].setRect(left + (w - 30) / 2f, inputs[1].top() + 5, 30, inputs[1].height() - 10);
 				outputs[i].setRect(left + w - BTN_SIZE - 10, inputs[1].top(), BTN_SIZE, BTN_SIZE);
 			} else {
 				combines[i].visible = false;
 				outputs[i].visible = false;
 			}
 
-			add(combines[i]);
-			add(outputs[i]);
+			add(combines[i]); // 将CombineButton添加到场景中
+			add(outputs[i]); // 将OutputSlot添加到场景中
 		}
 
+// 创建一个Emitter对象用于生成烟雾
 		smokeEmitter = new Emitter();
-		smokeEmitter.pos(outputs[0].left() + (BTN_SIZE-16)/2f, outputs[0].top() + (BTN_SIZE-16)/2f, 16, 16);
-		smokeEmitter.autoKill = false;
-		add(smokeEmitter);
-		
-		pos += 10;
+		smokeEmitter.pos(outputs[0].left() + (BTN_SIZE - 16) / 2f, outputs[0].top() + (BTN_SIZE - 16) / 2f, 16, 16);
+		smokeEmitter.autoKill = false; // 不自动消失
+		add(smokeEmitter); // 将烟雾发射器添加到场景中
 
-		lowerBubbles.pos(0, pos, Camera.main.width, Math.max(0, Camera.main.height-pos));
-		lowerBubbles.pour(Speck.factory( Speck.BUBBLE ), 0.1f );
-		
-		ExitButton btnExit = new ExitButton(){
+
+		pos += 10; // 增加pos值，用于调整位置
+
+		lowerBubbles.pos(0, pos, Camera.main.width, Math.max(0, Camera.main.height - pos)); // 设置lowerBubbles的位置和大小
+		lowerBubbles.pour(Speck.factory(Speck.BUBBLE), 0.1f); // 生成气泡
+
+		ExitButton btnExit = new ExitButton() {
 			@Override
 			protected void onClick() {
-				Game.switchScene(GameScene.class);
+				Game.switchScene(GameScene.class); // 切换到游戏场景
 			}
 		};
-		btnExit.setPos( Camera.main.width - btnExit.width(), 0 );
-		add( btnExit );
-		
-		IconButton btnGuide = new IconButton( new ItemSprite(ItemSpriteSheet.ALCH_PAGE, null)){
+		btnExit.setPos(Camera.main.width - btnExit.width(), 0); // 设置退出按钮的位置
+		add(btnExit); // 将退出按钮添加到场景中
+
+		IconButton btnGuide = new IconButton(new ItemSprite(ItemSpriteSheet.ALCH_PAGE, null)) {
 			@Override
 			protected void onClick() {
 				super.onClick();
-				clearSlots();
-				updateState();
-				AlchemyScene.this.addToFront(new Window(){
-				
+				clearSlots(); // 清除槽位
+				updateState(); // 更新状态
+				AlchemyScene.this.addToFront(new Window() {
 					{
-						WndJournal.AlchemyTab t = new WndJournal.AlchemyTab();
+						WndJournal.AlchemyTab t = new WndJournal.AlchemyTab(); // 创建炼金指南选项卡
 						int w, h;
 						if (landscape()) {
 							w = WndJournal.WIDTH_L; h = WndJournal.HEIGHT_L;
 						} else {
 							w = WndJournal.WIDTH_P; h = WndJournal.HEIGHT_P;
 						}
-						resize(w, h);
-						add(t);
-						t.setRect(0, 0, w, h);
+						resize(w, h); // 调整窗口大小
+						add(t); // 将选项卡添加到窗口中
+						t.setRect(0, 0, w, h); // 设置选项卡的位置和大小
 					}
-				
 				});
 			}
 
 			@Override
 			protected String hoverText() {
-				return Messages.titleCase(Document.ALCHEMY_GUIDE.title());
+				return Messages.titleCase(Document.ALCHEMY_GUIDE.title()); // 设置按钮悬浮时的文本
 			}
 		};
-		btnGuide.setRect(0, 0, 20, 20);
-		add(btnGuide);
+		btnGuide.setRect(0, 0, 20, 20); // 设置指南按钮的位置和大小
+		add(btnGuide); // 将指南按钮添加到场景中
 
-		String energyText = Messages.get(AlchemyScene.class, "energy") + " " + Dungeon.energy;
-		if (toolkit != null){
-			energyText += "+" + toolkit.availableEnergy();
+		String energyText = Messages.get(AlchemyScene.class, "energy") + " " + Dungeon.energy; // 设置能量文本
+		if (toolkit != null) {
+			energyText += "+" + toolkit.availableEnergy(); // 如果有工具包，添加额外的能量
 		}
 
-		energyLeft = PixelScene.renderTextBlock(energyText, 9);
+		energyLeft = PixelScene.renderTextBlock(energyText, 9); // 渲染能量文本块
 		energyLeft.setPos(
-				(Camera.main.width - energyLeft.width())/2,
+				(Camera.main.width - energyLeft.width()) / 2,
 				Camera.main.height - 8 - energyLeft.height()
 		);
-		energyLeft.hardlight(0x44CCFF);
-		add(energyLeft);
+		energyLeft.hardlight(0x44CCFF); // 设置文本颜色
+		add(energyLeft); // 将能量文本添加到场景中
 
-		energyIcon = new ItemSprite( toolkit != null ? ItemSpriteSheet.ARTIFACT_TOOLKIT : ItemSpriteSheet.ENERGY);
+		energyIcon = new ItemSprite(toolkit != null ? ItemSpriteSheet.ARTIFACT_TOOLKIT : ItemSpriteSheet.ENERGY); // 设置能量图标
 		energyIcon.x = energyLeft.left() - energyIcon.width();
-		energyIcon.y = energyLeft.top() - (energyIcon.height() - energyLeft.height())/2;
-		align(energyIcon);
-		add(energyIcon);
+		energyIcon.y = energyLeft.top() - (energyIcon.height() - energyLeft.height()) / 2;
+		align(energyIcon); // 对齐图标
+		add(energyIcon); // 将能量图标添加到场景中
 
-		energyAdd = new IconButton(Icons.get(Icons.PLUS)){
+		energyAdd = new IconButton(Icons.get(Icons.PLUS)) {
 			@Override
 			protected void onClick() {
-				WndEnergizeItem.openItemSelector();
+				WndEnergizeItem.openItemSelector(); // 打开能量物品选择器
 			}
 		};
-		energyAdd.setRect(energyLeft.right(), energyLeft.top() - (16 - energyLeft.height())/2, 16, 16);
-		align(energyAdd);
-		add(energyAdd);
+		energyAdd.setRect(energyLeft.right(), energyLeft.top() - (16 - energyLeft.height()) / 2, 16, 16); // 设置添加按钮的位置和大小
+		align(energyAdd); // 对齐添加按钮
+		add(energyAdd); // 将添加按钮添加到场景中
 
-		sparkEmitter = new Emitter();
-		sparkEmitter.pos(energyLeft.left(), energyLeft.top(), energyLeft.width(), energyLeft.height());
-		sparkEmitter.autoKill = false;
-		add(sparkEmitter);
-		
-		fadeIn();
-		
+		sparkEmitter = new Emitter(); // 创建火花发射器
+		sparkEmitter.pos(energyLeft.left(), energyLeft.top(), energyLeft.width(), energyLeft.height()); // 设置发射器的位置和大小
+		sparkEmitter.autoKill = false; // 不自动消失
+		add(sparkEmitter); // 将火花发射器添加到场景中
+
+		fadeIn(); // 淡入效果
+
 		try {
-			Dungeon.saveAll();
-			Badges.saveGlobal();
-			Journal.saveGlobal();
+			Dungeon.saveAll(); // 保存所有数据
+			Badges.saveGlobal(); // 保存全局徽章数据
+			Journal.saveGlobal(); // 保存全局日志
 		} catch (IOException e) {
-			ShatteredPixelDungeon.reportException(e);
+			ShatteredPixelDungeon.reportException(e); // 记录异常
 		}
 	}
 	

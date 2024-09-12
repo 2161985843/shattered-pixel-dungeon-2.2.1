@@ -114,6 +114,7 @@ public class Messages {
 		return get(o.getClass(), k, args);
 	}
 
+
 	public static String get(Class c, String k, Object...args) {
 		return get(c, k, null, args);
 	}

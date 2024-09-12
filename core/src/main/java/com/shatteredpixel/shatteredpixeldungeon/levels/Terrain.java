@@ -39,6 +39,8 @@ public class Terrain {
 	public static final int WALL_DECO		= 12;
 	public static final int BARRICADE		= 13;
 	public static final int EMPTY_SP		= 14;
+	public static final int RUINS		= 37;
+	public static final int SIGN		= 38;
 	public static final int HIGH_GRASS		= 15;
 	public static final int FURROWED_GRASS	= 30;
 
@@ -56,8 +58,7 @@ public class Terrain {
 
 	public static final int CUSTOM_DECO_EMPTY = 32; //regular empty tile that can't be overridden, used for custom visuals mainly
 	//solid environment decorations
-	public static final int CUSTOM_DECO	    = 23; //invisible decoration that will also be a custom visual, re-uses the old terrain ID for signs
-	public static final int STATUE			= 25;
+	public static final int CUSTOM_DECO	    = 23;  	public static final int STATUE			= 25;
 	public static final int STATUE_SP		= 26;
 	//These decorations are environment-specific
 	//33 and 34 are reserved for future statue-like decorations
@@ -117,6 +118,8 @@ public class Terrain {
 		flags[MINE_CRYSTAL] = SOLID;
 		flags[MINE_BOULDER] = SOLID;
 
+		flags[RUINS] = SOLID;
+		flags[SIGN] = PASSABLE;
 	}
 
 	public static int discover( int terr ) {

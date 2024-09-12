@@ -106,6 +106,7 @@ public abstract class EquipableItem extends Item {
 
 		if (isEquipped( user )) {
 			if (quantity == 1 && !this.doUnequip( user, false, false )) {
+
 				return;
 			}
 		}

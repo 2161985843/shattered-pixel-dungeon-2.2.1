@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -126,6 +127,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.grimm.pistol;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -141,6 +143,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.Sign;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ShadowCaster;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -228,12 +231,12 @@ public class Hero extends Char {
 
 		HP = HT = 20;
 		STR = STARTING_STR;
-		
+
 		belongings = new Belongings( this );
 		
 		visibleEnemies = new ArrayList<>();
 	}
-	
+
 	public void updateHT( boolean boostHP ){
 		int curHT = HT;
 		
@@ -244,7 +247,9 @@ public class Hero extends Char {
 		if (buff(ElixirOfMight.HTBoost.class) != null){
 			HT += buff(ElixirOfMight.HTBoost.class).boost();
 		}
-
+		if (buff(ElixirOfMight.HTBoost.class) != null){
+			HT += buff(ElixirOfMight.HTBoost.class).boost();
+		}
 		if (boostHP){
 			HP += Math.max(HT - curHT, 0);
 		}
@@ -455,6 +460,7 @@ public class Hero extends Char {
 
 		// 暂时将英雄的武器设置为使用的导弹武器
 		belongings.thrownWeapon = wep;
+		belongings.abilityWeapon =wep;
 
 		// 进行攻击行为，判断是否命中目标
 		boolean hit = attack(enemy);
@@ -464,7 +470,7 @@ public class Hero extends Char {
 
 		// 恢复英雄之前的武器
 		belongings.thrownWeapon = null;
-
+		belongings.abilityWeapon = null;
 		// 如果命中目标且英雄是角斗士子类且目标为敌人
 		// 触发角斗士子类特殊效果
 		if (hit && subClass == HeroSubClass.GLADIATOR && wasEnemy) {
@@ -659,14 +665,16 @@ public class Hero extends Char {
 	@Override
 	public int damageRoll() {
 		KindOfWeapon wep = belongings.attackingWeapon();
-		KindOfWeapon axy = belongings.auxiliary();
+		KindOfWeapon axy = belongings.attackingauxiliary();
 		int dmg=0;
 
 		// 如果非空手战斗
 		if (!RingOfForce.fightingUnarmed(this)) {
 			// 根据当前装备的武器进行伤害计算
-			if (wep != null && axy != null) {
-				dmg = wep.damageRoll(this) + axy.damageRoll(this);
+			if (wep != null && belongings.auxiliary!=null &&!(belongings.auxiliary instanceof pistol) ) {
+
+				dmg = wep.damageRoll(this) +axy.damageRoll(this );
+
 			} else if (wep != null) {
 				dmg = wep.damageRoll(this);
 			} else if (axy != null) {
@@ -784,31 +792,31 @@ public class Hero extends Char {
 			return false;
 		}
 	}
-	
-	public float attackDelay() {
+	//计算角色的攻击延迟时间
+	public float attackDelay() { // 如果角色拥有 LethalMomentumTracker 天赋效果，则移除该效果并返回 0
 		if (buff(Talent.LethalMomentumTracker.class) != null){
 			buff(Talent.LethalMomentumTracker.class).detach();
 			return 0;
 		}
 
 		float delay = 1f;
-
+		// 如果角色不是徒手战斗
 		if (!RingOfForce.fightingUnarmed(this)) {
-			
+			// 返回武器攻击延迟乘以武器的延迟因子if
 			return delay * belongings.attackingWeapon().delayFactor( this );
 			
 		} else {
-			//Normally putting furor speed on unarmed attacks would be unnecessary
-			//But there's going to be that one guy who gets a furor+force ring combo
-			//This is for that one guy, you shall get your fists of fury!
+			//通常，对非武装攻击施加愤怒的速度是不必要的
+			//但是会有一个人得到一个愤怒+力量戒指组合
+			//这是给那个家伙的，你会得到愤怒的拳头！
 			float speed = RingOfFuror.attackSpeedMultiplier(this);
 
-			//ditto for furor + sword dance!
+			//同上 Furor + 剑舞！
 			if (buff(Scimitar.SwordDance.class) != null){
 				speed += 0.6f;
 			}
 
-			//and augments + brawler's stance! My goodness, so many options now compared to 2014!
+			//并增强 + Brawler 的姿态！我的天哪，与 2014 年相比，现在有这么多选择！
 			if (RingOfForce.unarmedGetsWeaponAugment(this)){
 				delay = ((Weapon)belongings.weapon).augment.delayFactor(delay);
 			}
@@ -839,17 +847,17 @@ public class Hero extends Char {
 		spend( time );
 		next();
 	}
-	
+
 	@Override
 	public boolean act() {
-		
+
 		//calls to dungeon.observe will also update hero's local FOV.
 		fieldOfView = Dungeon.level.heroFOV;
 
 		if (buff(Endure.EndureTracker.class) != null){
 			buff(Endure.EndureTracker.class).endEnduring();
 		}
-		
+
 		if (!ready) {
 			//do a full observe (including fog update) if not resting.
 			if (!resting || buff(MindVision.class) != null || buff(Awareness.class) != null) {
@@ -859,76 +867,76 @@ public class Hero extends Char {
 				Dungeon.level.updateFieldOfView(this, fieldOfView);
 			}
 		}
-		
+
 		checkVisibleMobs();
 		BuffIndicator.refreshHero();
 		BuffIndicator.refreshBoss();
-		
+
 		if (paralysed > 0) {
-			
+
 			curAction = null;
-			
+
 			spendAndNext( TICK );
 			return false;
 		}
-		
+
 		boolean actResult;
 		if (curAction == null) {
-			
+
 			if (resting) {
 				spendConstant( TIME_TO_REST );
 				next();
 			} else {
 				ready();
 			}
-			
+
 			actResult = false;
-			
+
 		} else {
-			
+
 			resting = false;
-			
+
 			ready = false;
-			
+
 			if (curAction instanceof HeroAction.Move) {
 				actResult = actMove( (HeroAction.Move)curAction );
-				
+
 			} else if (curAction instanceof HeroAction.Interact) {
 				actResult = actInteract( (HeroAction.Interact)curAction );
-				
+
 			} else if (curAction instanceof HeroAction.Buy) {
 				actResult = actBuy( (HeroAction.Buy)curAction );
-				
+
 			}else if (curAction instanceof HeroAction.PickUp) {
 				actResult = actPickUp( (HeroAction.PickUp)curAction );
-				
+
 			} else if (curAction instanceof HeroAction.OpenChest) {
 				actResult = actOpenChest( (HeroAction.OpenChest)curAction );
-				
+
 			} else if (curAction instanceof HeroAction.Unlock) {
 				actResult = actUnlock((HeroAction.Unlock) curAction);
-				
+
 			} else if (curAction instanceof HeroAction.Mine) {
 				actResult = actMine( (HeroAction.Mine)curAction );
 
 			}else if (curAction instanceof HeroAction.LvlTransition) {
 				actResult = actTransition( (HeroAction.LvlTransition)curAction );
-				
+
 			} else if (curAction instanceof HeroAction.Attack) {
 				actResult = actAttack( (HeroAction.Attack)curAction );
-				
+
 			} else if (curAction instanceof HeroAction.Alchemy) {
 				actResult = actAlchemy( (HeroAction.Alchemy)curAction );
-				
+
 			} else {
 				actResult = false;
 			}
 		}
-		
+
 		if(hasTalent(Talent.BARKSKIN) && Dungeon.level.map[pos] == Terrain.FURROWED_GRASS){
 			Barkskin.conditionallyAppend(this, (lvl*pointsInTalent(Talent.BARKSKIN))/2, 1 );
 		}
-		
+
 		return actResult;
 	}
 	
@@ -1019,7 +1027,7 @@ public class Hero extends Char {
 		}
 	}
 	
-	private boolean actBuy( HeroAction.Buy action ) {
+	private boolean actBuy( HeroAction.Buy action ) {//了购买物品的动作逻辑
 		int dst = action.dst;
 		if (pos == dst) {
 
@@ -1076,11 +1084,10 @@ public class Hero extends Char {
 	//used to keep track if the wait/pickup action was used
 	// so that the hero spends a turn even if the fail to pick up an item
 	public boolean waitOrPickup = false;
-
-	private boolean actPickUp( HeroAction.PickUp action ) {
+	private boolean actPickUp( HeroAction.PickUp action ) {//角色在游戏中拾取物品的逻辑处理
 		int dst = action.dst;
 		if (pos == dst) {
-			
+
 			Heap heap = Dungeon.level.heaps.get( pos );
 			if (heap != null) {
 				Item item = heap.peek();
@@ -1104,7 +1111,7 @@ public class Hero extends Char {
 							GLog.i( Messages.capitalize(Messages.get(this, "you_now_have", item.name())) );
 						}
 					}
-					
+
 					curAction = null;
 				} else {
 
@@ -1146,55 +1153,59 @@ public class Hero extends Char {
 			return false;
 		}
 	}
-	
-	private boolean actOpenChest( HeroAction.OpenChest action ) {
-		int dst = action.dst;
-		if (Dungeon.level.adjacent( pos, dst ) || pos == dst) {
-			path = null;
-			
-			Heap heap = Dungeon.level.heaps.get( dst );
-			if (heap != null && (heap.type != Type.HEAP && heap.type != Type.FOR_SALE)) {
-				
+
+//个处理英雄在游戏中打开宝箱的方法
+	private boolean actOpenChest(HeroAction.OpenChest action) {
+		int dst = action.dst; // 获取动作的目标位置
+
+		// 检查英雄是否在目标位置附近或者就在目标位置上
+		if (Dungeon.level.adjacent(pos, dst) || pos == dst) {
+			path = null; // 清空路径，表示不需要移动
+
+			Heap heap = Dungeon.level.heaps.get(dst); // 获取目标位置的堆对象
+			if (heap != null && (heap.type != Type.HEAP && heap.type != Type.FOR_SALE)) { // 如果堆对象存在且类型不是堆或出售类型
+
+				// 检查是否需要钥匙才能打开宝箱
 				if ((heap.type == Type.LOCKED_CHEST && Notes.keyCount(new GoldenKey(Dungeon.depth)) < 1)
-					|| (heap.type == Type.CRYSTAL_CHEST && Notes.keyCount(new CrystalKey(Dungeon.depth)) < 1)){
+						|| (heap.type == Type.CRYSTAL_CHEST && Notes.keyCount(new CrystalKey(Dungeon.depth)) < 1)) {
 
-						GLog.w( Messages.get(this, "locked_chest") );
-						ready();
-						return false;
-
+					GLog.w(Messages.get(this, "locked_chest")); // 输出警告信息
+					ready(); // 完成动作，进入就绪状态
+					return false; // 返回 false，表示动作未完成
 				}
-				
+
+				// 根据堆对象的类型执行不同的操作
 				switch (heap.type) {
-				case TOMB:
-					Sample.INSTANCE.play( Assets.Sounds.TOMB );
-					PixelScene.shake( 1, 0.5f );
-					break;
-				case SKELETON:
-				case REMAINS:
-					break;
-				default:
-					Sample.INSTANCE.play( Assets.Sounds.UNLOCK );
+					case TOMB:
+						Sample.INSTANCE.play(Assets.Sounds.TOMB); // 播放墓地音效
+						PixelScene.shake(1, 0.5f); // 屏幕抖动
+						break;
+					case SKELETON:
+					case REMAINS:
+						break; // 对于骷髅和遗骸类型，不执行任何操作
+					default:
+						Sample.INSTANCE.play(Assets.Sounds.UNLOCK); // 播放解锁音效
 				}
-				
-				sprite.operate( dst );
-				
+
+				sprite.operate(dst); // 对堆对象执行操作（例如打开宝箱）
+
 			} else {
-				ready();
+				ready(); // 完成动作，进入就绪状态
 			}
 
-			return false;
+			return false; // 返回 false，表示动作未完成
 
-		} else if (getCloser( dst )) {
+		} else if (getCloser(dst)) { // 如果英雄不在目标位置附近，则尝试移动到目标位置附近
 
-			return true;
+			return true; // 返回 true，表示需要继续移动以接近目标位置
 
 		} else {
-			ready();
-			return false;
+			ready(); // 完成动作，进入就绪状态
+			return false; // 返回 false，表示动作未完成
 		}
 	}
-	
 	private boolean actUnlock( HeroAction.Unlock action ) {
+		//处理解锁动作的逻辑。根据目标位置是否与当前位置相邻，以及角色是否拥有相应的钥匙，来执行解锁操作
 		int doorCell = action.dst;
 		if (Dungeon.level.adjacent( pos, doorCell )) {
 			path = null;
@@ -1362,6 +1373,9 @@ public class Hero extends Char {
 	private boolean actTransition(HeroAction.LvlTransition action ) {
 		int stairs = action.dst;
 		LevelTransition transition = Dungeon.level.getTransition(stairs);
+		if (Dungeon.level.map[action.dst] == Terrain.SIGN){
+			Sign.readPit();
+		}
 
 		if (rooted) {
 			PixelScene.shake(1, 1f);
@@ -1387,12 +1401,12 @@ public class Hero extends Char {
 			return false;
 		}
 	}
-	
+	// 角色进行攻击的方法
 	private boolean actAttack( HeroAction.Attack action ) {
 
 		enemy = action.target;
 
-		if (enemy.isAlive() && canAttack( enemy ) && !isCharmedBy( enemy ) && enemy.invisible == 0) {
+		if (enemy.isAlive() && canAttack( enemy ) && !isCharmedBy( enemy ) && enemy.invisible == 0&& enemy.nothingness ) {
 
 			if (heroClass != HeroClass.DUELIST
 					&& hasTalent(Talent.AGGRESSIVE_BARRIER)
@@ -1422,7 +1436,7 @@ public class Hero extends Char {
 	public Char enemy(){
 		return enemy;
 	}
-	
+	// 角色进行休息的方法
 	public void rest( boolean fullRest ) {
 		spendAndNextConstant( TIME_TO_REST );
 		if (hasTalent(Talent.HOLD_FAST)){
@@ -1438,22 +1452,35 @@ public class Hero extends Char {
 		}
 		resting = fullRest;
 	}
-	
+	/**
+	 * 计算角色造成的伤害值
+	 * @param enemy 敌人角色对象
+	 * @param damage 攻击伤害值+附魔效果
+	 * @return 返回计算后的伤害值
+	 */
 	@Override
 	public int attackProc( final Char enemy, int damage ) {
 		damage = super.attackProc( enemy, damage );
 
 		KindOfWeapon wep;
+		KindOfWeapon aux;
+
 		if (RingOfForce.fightingUnarmed(this) && !RingOfForce.unarmedGetsWeaponEnchantment(this)){
 			wep = null;
+			aux = null;
 		} else {
 			wep = belongings.attackingWeapon();
+			aux = belongings.attackingauxiliary();
 		}
 
-		if (wep != null) damage = wep.proc( this, enemy, damage );
+		if (wep != null && aux != null && belongings.auxiliary!=null&&!(belongings.auxiliary instanceof pistol)) {
+			damage = wep.proc(this, enemy, damage) + aux.proc(this, enemy, 0)+aux.damageRoll(enemy );
+		} else if (aux != null) {
+			damage = aux.proc(this, enemy, damage);
+		} else if (wep != null) {
+			damage = wep.proc(this, enemy, damage);
+		}
 
-		damage = Talent.onAttackProc( this, enemy, damage );
-		
 		switch (subClass) {
 		case SNIPER:
 			if (wep instanceof MissileWeapon && !(wep instanceof SpiritBow.SpiritArrow) && enemy != this) {
@@ -1480,7 +1507,12 @@ public class Hero extends Char {
 		
 		return damage;
 	}
-	
+	/**
+	 * 计算角色防御过程中承受的伤害值
+	 * @param enemy 敌人角色对象
+	 * @param damage 攻击造成的伤害值
+	 * @return 返回计算后的实际承受伤害值
+	 */
 	@Override
 	public int defenseProc( Char enemy, int damage ) {
 		
@@ -1488,7 +1520,7 @@ public class Hero extends Char {
 			Berserk berserk = Buff.affect(this, Berserk.class);
 			berserk.damage(damage);
 		}
-		
+
 		if (belongings.armor() != null) {
 			damage = belongings.armor().proc( enemy, this, damage );
 		}
@@ -1501,7 +1533,7 @@ public class Hero extends Char {
 		return super.defenseProc( enemy, damage );
 	}
 	
-	@Override
+	@Override//伤害处理方法
 	public void damage( int dmg, Object src ) {
 		if (buff(TimekeepersHourglass.timeStasis.class) != null)
 			return;
@@ -1524,16 +1556,16 @@ public class Hero extends Char {
 			if (endure != null){
 				dmg = Math.round(endure.adjustDamageTaken(dmg));
 			}
-			//the same also applies to challenge scroll damage reduction
+			//the same also applies to challenge scroll damage reduction   // 挑战卷轴的伤害减免
 			if (buff(ScrollOfChallenge.ChallengeArena.class) != null){
 				dmg *= 0.67f;
 			}
-			//and to monk meditate damage reduction
+			//and to monk meditate damage reduction// Monk冥想的伤害减免
 			if (buff(MonkEnergy.MonkAbility.Meditate.MeditateResistance.class) != null){
 				dmg *= 0.2f;
 			}
 		}
-
+		// 检查CapeOfThorns.Thorns状态，并处理荆棘效果
 		CapeOfThorns.Thorns thorns = buff( CapeOfThorns.Thorns.class );
 		if (thorns != null) {
 			dmg = thorns.proc(dmg, (src instanceof Char ? (Char)src : null),  this);
@@ -1587,7 +1619,7 @@ public class Hero extends Char {
 			}
 		}
 	}
-	
+	//检查在当前角色的视野范围内是否存在敌对的角色
 	public void checkVisibleMobs() {
 		ArrayList<Mob> visible = new ArrayList<>();
 
@@ -1660,11 +1692,6 @@ public class Hero extends Char {
 		if (target == pos)
 			return false;
 
-		if (rooted) {
-			PixelScene.shake( 1, 1f );
-			return false;
-		}
-		
 		int step = -1;
 		
 		if (Dungeon.level.adjacent( pos, target )) {
@@ -1758,13 +1785,17 @@ public class Hero extends Char {
 		}
 
 	}
-	
+	//处理角色在游戏地图上进行移动和交互操作的方法
 	public boolean handle( int cell ) {
 		
 		if (cell == -1) {
 			return false;
 		}
+		if (Dungeon.level.map[cell] == Terrain.SIGN && cell == pos) {//告示牌
+			curAction = new HeroAction.Alchemy( cell );
+			Sign.readPit();
 
+		}
 		if (fieldOfView == null || fieldOfView.length != Dungeon.level.length()){
 			fieldOfView = new boolean[Dungeon.level.length()];
 			Dungeon.level.updateFieldOfView( this, fieldOfView );
@@ -1988,7 +2019,7 @@ public class Hero extends Char {
 		
 		return stealth;
 	}
-	
+	//复活道具的使用
 	@Override
 	public void die( Object cause ) {
 		
@@ -2135,7 +2166,7 @@ public class Hero extends Char {
 	//and thread coordination implications if that method calls buff(...) frequently
 	private Berserk berserk;
 
-	@Override
+	@Override//根据角色的生命值和狂暴状态来确定角色是否还活着
 	public boolean isAlive() {
 		
 		if (HP <= 0){
@@ -2147,7 +2178,7 @@ public class Hero extends Char {
 		}
 	}
 
-	@Override
+	@Override//角色移动时根据移动地块的类型播放不同的音效。
 	public void move(int step, boolean travelling) {
 		boolean wasHighGrass = Dungeon.level.map[step] == Terrain.HIGH_GRASS;
 
@@ -2220,7 +2251,7 @@ public class Hero extends Char {
 		GameScene.checkKeyHold();
 	}
 	
-	@Override
+	@Override//开门，开箱的操作
 	public void onOperateComplete() {
 		
 		if (curAction instanceof HeroAction.Unlock) {
@@ -2295,9 +2326,9 @@ public class Hero extends Char {
 	public boolean isInvulnerable(Class effect) {
 		return super.isInvulnerable(effect) || buff(AnkhInvulnerability.class) != null;
 	}
-
+//进行特定范围内的搜索操作
 	public boolean search( boolean intentional ) {
-		
+
 		if (!isAlive()) return false;
 		
 		boolean smthFound = false;

@@ -32,16 +32,16 @@ import java.util.Collection;
 public class QuickSlot {
 
 	/**
-	 * Slots contain objects which are also in a player's inventory. The one exception to this is when quantity is 0,
-	 * which can happen for a stackable item that has been 'used up', these are referred to as placeholders.
+	 * 槽位包含玩家背包中的物品对象。唯一的例外是，当物品数量为0时，这可能是指一种可堆叠物品已经被“用完”，此时它们被称为占位符。
 	 */
 
-	//note that the current max size is coded at 6, due to UI constraints, but it could be much much bigger with no issue.
+
+	//请注意，由于 UI 限制，当前的最大大小编码为 6，但它可能要大得多，没有问题。
 	public static int SIZE = 6;
 	private Item[] slots = new Item[SIZE];
 
 
-	//direct array interaction methods, everything should build from these methods.
+	//直接数组交互方法，一切都应该从这些方法构建。
 	public void setSlot(int slot, Item item){
 		clearItem(item); //we don't want to allow the same item in multiple slots.
 		slots[slot] = item;
@@ -96,11 +96,11 @@ public class QuickSlot {
 	}
 
 	public void convertToPlaceholder(Item item){
-		
+
 		if (contains(item)) {
 			Item placeholder = item.virtual();
 			if (placeholder == null) return;
-			
+
 			for (int i = 0; i < SIZE; i++) {
 				if (getItem(i) == item) setSlot(i, placeholder);
 			}
@@ -122,9 +122,9 @@ public class QuickSlot {
 	private final String PLACEMENTS = "placements";
 
 	/**
-	 * Placements array is used as order is preserved while bundling, but exact index is not, so if we
-	 * bundle both the placeholders (which preserves their order) and an array telling us where the placeholders are,
-	 * we can reconstruct them perfectly.
+	 * 放置数组用于捆绑时保留顺序，但精确索引不是，所以如果我们
+	 * 捆绑占位符（保留它们的顺序）和一个数组，告诉我们占位符的位置，
+	 *我们可以完美地重建它们。
 	 */
 
 	public void storePlaceholders(Bundle bundle){

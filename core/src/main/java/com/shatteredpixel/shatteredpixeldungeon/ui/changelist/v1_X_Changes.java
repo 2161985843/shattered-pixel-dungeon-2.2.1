@@ -54,11 +54,21 @@ import java.util.ArrayList;
 public class v1_X_Changes {
 
 	public static void addAllChanges( ArrayList<ChangeInfo> changeInfos ){
+		v2_X_Changes.addAllChanges(changeInfos);
 		add_v1_4_Changes(changeInfos);
 		add_v1_3_Changes(changeInfos);
 		add_v1_2_Changes(changeInfos);
 		add_v1_1_Changes(changeInfos);
 		add_v1_0_Changes(changeInfos);
+		v0_9_X_Changes.addAllChanges(changeInfos);
+		v0_8_X_Changes.addAllChanges(changeInfos);
+		v0_7_X_Changes.addAllChanges(changeInfos);
+		v0_6_X_Changes.addAllChanges(changeInfos);
+		v0_5_X_Changes.addAllChanges(changeInfos);
+		v0_4_X_Changes.addAllChanges(changeInfos);
+		v0_3_X_Changes.addAllChanges(changeInfos);
+		v0_2_X_Changes.addAllChanges(changeInfos);
+		v0_1_X_Changes.addAllChanges(changeInfos);
 	}
 
 	public static void add_v1_4_Changes( ArrayList<ChangeInfo> changeInfos ) {

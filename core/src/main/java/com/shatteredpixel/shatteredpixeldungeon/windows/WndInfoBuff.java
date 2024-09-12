@@ -54,4 +54,5 @@ public class WndInfoBuff extends Window {
 
 		resize( WIDTH, (int)txtInfo.bottom() + 2 );
 	}
+
 }

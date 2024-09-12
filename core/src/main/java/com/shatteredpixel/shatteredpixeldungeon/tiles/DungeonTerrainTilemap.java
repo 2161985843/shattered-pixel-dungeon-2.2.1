@@ -54,7 +54,6 @@ public class DungeonTerrainTilemap extends DungeonTilemap {
 		} else if (tile == Terrain.CHASM) {
 			return DungeonTileSheet.stitchChasmTile( pos > mapWidth ? map[pos - mapWidth] : -1);
 		}
-
 		if (!flat) {
 			if ((DungeonTileSheet.doorTile(tile))) {
 				return DungeonTileSheet.getRaisedDoorTile(tile, map[pos - mapWidth]);

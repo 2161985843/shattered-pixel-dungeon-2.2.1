@@ -53,7 +53,7 @@ public class DungeonTileSheet {
 	public static final int GRASS           = GROUND +2;
 	public static final int EMBERS          = GROUND +3;
 	public static final int FLOOR_SP        = GROUND +4;
-
+	public static final int SIGN_A       = GROUND +5;
 	public static final int FLOOR_ALT_1     = GROUND +6;
 	public static final int FLOOR_DECO_ALT  = GROUND +7;
 	public static final int GRASS_ALT       = GROUND +8;
@@ -114,21 +114,22 @@ public class DungeonTileSheet {
 
 		//water
 		chasmStitcheable.put( Terrain.WATER,        CHASM_WATER );
+
+		chasmStitcheable.put( Terrain.SIGN,    SIGN_A );
 	}
 
 	public static int stitchChasmTile(int above){
 		return chasmStitcheable.get(above, CHASM);
 	}
 
-
 	/**********************************************************************
 	 * Water Tiles
 	 **********************************************************************/
 
 	public static final int WATER =                                         xy(1, 3);   //16 slots
-	//next 15 slots are all water stitching with ground.
+	//接下来的 15 个插槽都是水缝合的，有接地。
 
-	//These tiles can stitch with water
+	//这些瓷砖可以用水缝合
 	public static HashSet<Integer> waterStitcheable = new HashSet<>(Arrays.asList(
 			Terrain.EMPTY, Terrain.GRASS, Terrain.EMPTY_WELL,
 			Terrain.ENTRANCE, Terrain.EXIT, Terrain.EMBERS,
@@ -333,6 +334,7 @@ public class DungeonTileSheet {
 		//TODO currently this line on triggers on mining floors, do we want to make it universal?
 		else if (Dungeon.branch == 1 && below == Terrain.WALL_DECO) visual = WALL_OVERHANG_DECO;
 		else if (below == Terrain.BOOKSHELF)                        visual = WALL_OVERHANG_WOODEN;
+
 		else                                                        visual = WALL_OVERHANG;
 
 		if (!wallStitcheable(rightBelow))  visual += 1;
@@ -378,7 +380,7 @@ public class DungeonTileSheet {
 	 * Logic for the selection of tile visuals
 	 **********************************************************************/
 
-	//These visuals always directly represent a game tile with no stitching required
+	//这些视觉效果始终直接表示游戏图块，无需拼接
 	public static SparseArray<Integer> directVisuals = new SparseArray<>();
 	static {
 		directVisuals.put(Terrain.EMPTY,            FLOOR);
@@ -400,6 +402,8 @@ public class DungeonTileSheet {
 		directVisuals.put(Terrain.LOCKED_EXIT,      LOCKED_EXIT);
 		directVisuals.put(Terrain.UNLOCKED_EXIT,    UNLOCKED_EXIT);
 		directVisuals.put(Terrain.WELL,             WELL);
+
+		directVisuals.put(Terrain.SIGN,             SIGN_A);
 
 	}
 

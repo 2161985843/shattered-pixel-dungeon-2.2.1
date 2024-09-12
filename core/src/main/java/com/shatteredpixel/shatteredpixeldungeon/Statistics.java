@@ -70,7 +70,7 @@ public class Statistics {
 	public static void reset() {
 		
 		goldCollected	= 0;
-		deepestFloor	= 0;
+		deepestFloor	= -1;
 		highestAscent	= 0;
 		enemiesSlain	= 0;
 		foodEaten		= 0;

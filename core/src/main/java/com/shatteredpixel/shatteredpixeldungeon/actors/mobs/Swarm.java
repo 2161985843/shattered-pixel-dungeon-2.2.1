@@ -29,6 +29,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Fran;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
@@ -55,7 +57,14 @@ public class Swarm extends Mob {
 		loot = new PotionOfHealing();
 		lootChance = 0.1667f; //by default, see lootChance()
 	}
-	
+	@Override
+	public void rollToDropLoot() {
+		// 调用Imp.Quest.process(this)方法来处理与任务相关的逻辑
+
+
+		// 调用父类的rollToDropLoot方法，执行掉落战利品的逻辑
+		super.rollToDropLoot();
+	}
 	private static final float SPLIT_DELAY	= 1f;
 	
 	int generation	= 0;

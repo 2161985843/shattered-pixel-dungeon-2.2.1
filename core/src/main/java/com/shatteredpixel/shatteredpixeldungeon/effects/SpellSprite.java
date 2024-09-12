@@ -41,7 +41,7 @@ public class SpellSprite extends Image {
 	public static final int HASTE       = 5;
 	public static final int VISION      = 6;
 	public static final int PURITY      = 7;
-	
+	public static final int PISTOL      = 8;
 	private static final int SIZE	= 16;
 	
 	private enum Phase {
@@ -133,9 +133,9 @@ public class SpellSprite extends Image {
 	public static void show( Char ch, int index ) {
 		show(ch, index, 1, 1, 1);
 	}
-	
+
 	public static void show( Char ch, int index, float r, float g, float b ) {
-		
+
 		if (!ch.sprite.visible) {
 			return;
 		}
@@ -152,4 +152,5 @@ public class SpellSprite extends Image {
 		sprite.revive();
 		all.put( ch, sprite );
 	}
+
 }

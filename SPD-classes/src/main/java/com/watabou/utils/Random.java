@@ -83,7 +83,7 @@ public class Random {
 		return Float() * max;
 	}
 
-	//returns a uniformly distributed float in the range [min, max)
+	//返回范围内均匀分布的浮点数[min, max)
 	public static float Float( float min, float max ) {
 		return min + Float(max - min);
 	}

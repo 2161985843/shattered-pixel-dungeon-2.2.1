@@ -67,6 +67,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.grimm.Pistol1;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -134,7 +135,6 @@ public abstract class Mob extends Char {
 			firstAdded = false;
 		}
 	}
-
 	private static final String STATE	= "state";
 	private static final String SEEN	= "seen";
 	private static final String TARGET	= "target";
@@ -752,13 +752,12 @@ public abstract class Mob extends Char {
 		
 		super.damage( dmg, src );
 	}
-	
-	
+
 	@Override
 	public void destroy() {
 		
 		super.destroy();
-		
+
 		Dungeon.level.mobs.remove( this );
 
 		if (Dungeon.hero.buff(MindVision.class) != null){
@@ -796,7 +795,7 @@ public abstract class Mob extends Char {
 			}
 		}
 	}
-	
+
 	@Override
 	public void die( Object cause ) {
 
@@ -805,7 +804,8 @@ public abstract class Mob extends Char {
 			if (EXP % 2 == 1) EXP += Random.Int(2);
 			EXP /= 2;
 		}
-
+		Pistol1 ps = new Pistol1();
+		ps.level2();
 		if (alignment == Alignment.ENEMY){
 			rollToDropLoot();
 

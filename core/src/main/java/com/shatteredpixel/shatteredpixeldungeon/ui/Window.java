@@ -49,7 +49,8 @@ public class Window extends Group implements Signal.Listener<KeyEvent> {
 	protected NinePatch chrome;
 
 	public static final int WHITE = 0xFFFFFF;
-	public static final int TITLE_COLOR = 0xFFFF44;
+	public static final int TITLE_COLOR = 0xFFFF44;public static final int RED_COLOR = 0xFF0000; // 红色
+	public static final int ORANGE_COLOR = 0xFFA500; // 橙色
 	public static final int SHPX_COLOR = 0x33BB33;
 	
 	public Window() {

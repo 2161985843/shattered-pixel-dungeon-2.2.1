@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BruteSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.IronTreeSprint;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
@@ -103,7 +104,11 @@ public class v2_X_Changes {
 				"_-_ Upgrade now caps at +2, down from +3\n" +
 				"_-_ Chance for smith to produce a +0 item up to 30%, from 20%\n" +
 				"_-_ Chance for smith to produce a +1 item down to 45%, from 55%"));
-
+		changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), Messages.get(ChangesScene.class, "misc"),
+				"_-_ The Crystal Spire now awards 20 exp when it is defeated\n\n" +
+						"_-_ Increased the amount of toxic gas that the rot heart can produce\n\n" +
+						"_-_ New quest bosses now interrupt the hero when they are telegraphing an attack\n\n" +
+						"_-_ Updated translations and translator credits"));
 		changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), Messages.get(ChangesScene.class, "misc"),
 				"_-_ The Crystal Spire now awards 20 exp when it is defeated\n\n" +
 				"_-_ Increased the amount of toxic gas that the rot heart can produce\n\n" +
@@ -154,7 +159,7 @@ public class v2_X_Changes {
 				"\n" +
 				"_Lastly, four 'finale' tracks have been added._ Three of these tracks play when you are about to defeat the game's three later bosses, and one plays right before securing victory (either grabbing the amulet or reaching the end of ascension)."));
 
-		changes.addButton( new ChangeButton(new Image(new WandmakerSprite()), "Prison Quest Changes",
+		changes.addButton( new ChangeButton(new Image(new IronTreeSprint()), "Prison Quest Changes",
 				"The game's second quest has received a bunch of adjustments to make it more engaging.\n" +
 				"\n" +
 				"_Corpse Dust Quest:_ The mass grave room now always spawns at least a bit away from the entrance, and wraith spawning is more consistent.\n" +
