@@ -114,6 +114,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfPrismaticLight
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.grimm.Cannon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.grimm.Changtong_a;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.grimm.Changtong_b;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.grimm.Fusiliers;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.grimm.Fusiliers_A;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.grimm.Pistol1;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AssassinsBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BattleAxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
@@ -187,6 +193,7 @@ public class Generator {
 
 	public enum Category {
 		WEAPON	( 2, 2, MeleeWeapon.class),
+		GRM_T1	( 0, 0, MeleeWeapon.class),
 		WEP_T1	( 0, 0, MeleeWeapon.class),
 		WEP_T2	( 0, 0, MeleeWeapon.class),
 		WEP_T3	( 0, 0, MeleeWeapon.class),
@@ -209,6 +216,7 @@ public class Generator {
 		FOOD	( 0, 0, Food.class ),
 		
 		POTION	( 8, 8, Potion.class ),
+
 		SEED	( 1, 1, Plant.Seed.class ),
 		
 		SCROLL	( 8, 8, Scroll.class ),
@@ -257,7 +265,7 @@ public class Generator {
 			GOLD.classes = new Class<?>[]{
 					Gold.class };
 			GOLD.probs = new float[]{ 1 };
-			
+
 			POTION.classes = new Class<?>[]{
 					PotionOfStrength.class, //2 drop every chapter, see Dungeon.posNeeded()
 					PotionOfHealing.class,
@@ -344,7 +352,17 @@ public class Generator {
 			//see generator.randomWeapon
 			WEAPON.classes = new Class<?>[]{};
 			WEAPON.probs = new float[]{};
-			
+			GRM_T1.classes = new Class<?>[]{
+					Cannon.class, //2 drop every chapter, see Dungeon.posNeeded()
+					Changtong_a.class,
+					Changtong_b.class,
+					Fusiliers.class,
+					Fusiliers_A.class,
+					Pistol1.class,
+
+			};
+			GRM_T1.defaultProbs = new float[]{ 2, 0, 2, 2, 2 };
+			GRM_T1.probs = GRM_T1.defaultProbs.clone();
 			WEP_T1.classes = new Class<?>[]{
 					WornShortsword.class,
 					MagesStaff.class,
@@ -354,7 +372,7 @@ public class Generator {
 			};
 			WEP_T1.defaultProbs = new float[]{ 2, 0, 2, 2, 2 };
 			WEP_T1.probs = WEP_T1.defaultProbs.clone();
-			
+
 			WEP_T2.classes = new Class<?>[]{
 					Shortsword.class,
 					HandAxe.class,
@@ -536,8 +554,8 @@ public class Generator {
 		if (cat.defaultProbs != null) cat.probs = cat.defaultProbs.clone();
 	}
 
-	//reverts changes to drop chances generates by this item
-	//equivalent of shuffling the card back into the deck, does not preserve order!
+	//逆转此道具对掉落几率产生的变化
+	//相当于将牌洗回牌组，但不保留顺序！
 	public static void undoDrop(Item item){
 		for (Category cat : Category.values()){
 			if (item.getClass().isAssignableFrom(cat.superClass)){
@@ -550,7 +568,7 @@ public class Generator {
 			}
 		}
 	}
-	
+
 	public static Item random() {
 		Category cat = Random.chances( categoryProbs );
 		if (cat == null){
@@ -561,9 +579,9 @@ public class Generator {
 		categoryProbs.put( cat, categoryProbs.get( cat ) - 1);
 
 		if (cat == Category.SEED) {
-			//We specifically use defaults for seeds here because, unlike other item categories
-			// their predominant source of drops is grass, not levelgen. This way the majority
-			// of seed drops still use a deck, but the few that are spawned by levelgen are consistent
+			//我们在这里特别使用了种子的默认值，因为与其他物品类别不同
+			// 它们的主要水滴来源是草，而不是沥青。这样，大多数
+			// 的种子掉落仍然使用卡组，但水平源产生的少数种子掉落是一致的
 			return randomUsingDefaults(cat);
 		} else {
 			return random(cat);
