@@ -183,11 +183,11 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 			PixelScene.align(Camera.main, ((cell / Dungeon.level.width()) + 1.0f) * csize - height() - csize * perspectiveRaise)
 		);
 	}
-	
+
 	public void place( int cell ) {
 		point( worldToCamera( cell ) );
 	}
-	
+
 	public void showStatus( int color, String text, Object... args ) {
 		if (visible) {
 			if (args.length > 0) {
@@ -202,7 +202,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 			}
 		}
 	}
-	
+
 	public void idle() {
 		play(idle);
 	}

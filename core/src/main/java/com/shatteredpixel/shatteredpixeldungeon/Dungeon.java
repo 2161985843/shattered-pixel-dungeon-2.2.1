@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RevealedArea;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.properties.Bornclairvoyant;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
@@ -64,6 +65,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RuinsZeroLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -256,7 +258,7 @@ public class Dungeon {
 		QuickSlotButton.reset();
 		Toolbar.swappedQuickslots = false;
 		
-		depth = 1;
+		depth = 0;
 		branch = 0;
 		generatedLevels.clear();
 
@@ -298,6 +300,8 @@ public class Dungeon {
 		Level level;
 		if (branch == 0) {
 			switch (depth) {
+				case 0:level = new RuinsZeroLevel();
+					break;
 				case 1:
 				case 2:
 				case 3:
@@ -375,7 +379,7 @@ public class Dungeon {
 			if (depth > Statistics.deepestFloor && branch == 0) {
 				Statistics.deepestFloor = depth;
 
-				if (Statistics.qualifiedForNoKilling) {
+				if (Statistics.qualifiedForNoKilling&& depth != 0) {
 					Statistics.completedWithNoKilling = true;
 				} else {
 					Statistics.completedWithNoKilling = false;
@@ -421,7 +425,9 @@ public class Dungeon {
 	public static boolean shopOnLevel() {
 		return depth == 6 || depth == 11 || depth == 16;
 	}
-	
+	public static boolean shopnLevel() {
+		return depth == 1 ;
+	}
 	public static boolean bossLevel() {
 		return bossLevel( depth );
 	}
@@ -857,7 +863,11 @@ public class Dungeon {
 	//default to recomputing based on max hero vision, in case vision just shrank/grew
 	public static void observe(){
 		int dist = Math.max(Dungeon.hero.viewDistance, 8);
+
 		dist *= 1f + 0.25f*Dungeon.hero.pointsInTalent(Talent.FARSIGHT);
+		if (Dungeon.hero.buff(Bornclairvoyant.class) != null){
+			dist +=Math.max(Dungeon.hero.viewDistance, 10);
+		}
 
 		if (Dungeon.hero.buff(MagicalSight.class) != null){
 			dist = Math.max( dist, MagicalSight.DISTANCE );

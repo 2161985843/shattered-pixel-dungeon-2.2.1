@@ -376,7 +376,7 @@ public class ItemSprite extends MovieClip {
 		int col = index % rows;
 		return tx.getPixel( col * SIZE + x, row * SIZE + y );
 	}
-	
+
 	public static class Glowing {
 		
 		public int color;
