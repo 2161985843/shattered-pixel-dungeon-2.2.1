@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CircleArc;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -75,7 +76,8 @@ public class StatusPane extends Component {
 
 	private BusyIndicator busy;
 	private CircleArc counter;
-
+	private Image hg;
+	private BitmapText hgText;
 	private static String asset = Assets.Interfaces.STATUS;
 
 	private boolean large;
@@ -128,11 +130,17 @@ public class StatusPane extends Component {
 		if (large)  hp = new Image(asset, 0, 103, 128, 9);
 		else        hp = new Image(asset, 0, 36, 50, 4);
 		add( hp );
+		if (large)  hg = new Image(asset, 0, 128, 128, 7);
+		else        hg = new Image(asset, 0, 45, 49, 3);
+		add( hg );
 
 		hpText = new BitmapText(PixelScene.pixelFont);
 		hpText.alpha(0.6f);
 		add(hpText);
 
+		hgText = new BitmapText(PixelScene.pixelFont);
+		hgText.alpha(0.6f);
+		add(hgText);
 		heroInfoOnBar = new Button(){
 			@Override
 			protected void onClick () {
@@ -197,6 +205,12 @@ public class StatusPane extends Component {
 
 			hpText.x = hp.x + (128 - hpText.width())/2f;
 			hpText.y = hp.y + 1;
+			hg.x= x + 30;
+			hg.y= y + 10f;
+
+			hgText.x = x+80;
+			hgText.y = hg.y;
+			PixelScene.align(hgText);
 			PixelScene.align(hpText);
 
 			expText.x = exp.x + (128 - expText.width())/2f;
@@ -205,8 +219,7 @@ public class StatusPane extends Component {
 
 			heroInfoOnBar.setRect(heroInfo.right(), y + 19, 130, 20);
 
-			buffs.setRect(x + 31, y, 128, 16);
-
+			buffs.setRect(x +160 , y+20, 128, 16);
 			busy.x = x + bg.width + 1;
 			busy.y = y + bg.height - 9;
 		} else {
@@ -222,9 +235,17 @@ public class StatusPane extends Component {
 			hpText.y -= 0.001f; //prefer to be slightly higher
 			PixelScene.align(hpText);
 
+			hg.x = 30.0f;
+			hg.y = 8.0f;
+
+			hgText.scale.set(PixelScene.align(0.5f));
+			hgText.x = hg.x + 1;
+			hgText.y = hg.y + (hp.height - (hgText.baseLine()+hgText.scale.y))/2f;
+			hgText.y -= 0.001f; //prefer to be slightly higher
+			PixelScene.align(hgText);
 			heroInfoOnBar.setRect(heroInfo.right(), y, 50, 9);
 
-			buffs.setRect( x + 31, y + 9, 50, 8 );
+			buffs.setRect( x + 30, y + 12, 50, 8 );
 
 			busy.x = x + 1;
 			busy.y = y + 33;
@@ -238,7 +259,7 @@ public class StatusPane extends Component {
 	@Override
 	public void update() {
 		super.update();
-		
+
 		int health = Dungeon.hero.HP;
 		int shield = Dungeon.hero.shielding();
 		int max = Dungeon.hero.HT;
@@ -255,7 +276,7 @@ public class StatusPane extends Component {
 		} else {
 			avatar.resetColor();
 		}
-
+		int maxHunger = (int) Hunger.STARVING;
 		hp.scale.x = Math.max( 0, (health-shield)/(float)max);
 		shieldedHP.scale.x = health/(float)max;
 
@@ -283,6 +304,16 @@ public class StatusPane extends Component {
 
 		} else {
 			exp.scale.x = (width / exp.width) * Dungeon.hero.exp / Dungeon.hero.maxExp();
+		}
+
+		Hunger hungerBuff = Dungeon.hero.buff(Hunger.class);
+		if (hungerBuff != null) {
+			int hunger = Math.max(0, maxHunger - hungerBuff.hunger());
+			hg.scale.x = (float) hunger / (float) maxHunger;
+			hgText.text(hunger/10 + "/" + maxHunger/10);
+		}
+		else if (Dungeon.hero.isAlive()) {
+			hg.scale.x = 1.0f;
 		}
 
 		if (Dungeon.hero.lvl != lastLvl) {
