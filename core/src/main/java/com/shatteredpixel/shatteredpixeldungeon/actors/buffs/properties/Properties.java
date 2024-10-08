@@ -50,6 +50,18 @@ public class Properties extends Buff {
     private final Set<Tag> tags = new HashSet<>();
     // 构造函数
 
+    protected boolean cansBeGain(Hero hero) {
+        return true;
+    }
+    private int strBonus; // 力量加成
+    private int incrementCounter; // 递增计数器
+    public int getIncrementValue() {
+        // 获取增量计数器的当前值
+        return incrementCounter;
+    }
+    // 方法示例，用于增加力量加成
+    public void addStrengthBonus(int bonus) {
+    }
 
 
 }

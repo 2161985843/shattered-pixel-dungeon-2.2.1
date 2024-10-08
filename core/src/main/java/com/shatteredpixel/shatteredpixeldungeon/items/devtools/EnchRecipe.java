@@ -5,17 +5,18 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.properties.Bornclairvoyant;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.properties.Dome;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.properties.GhoulsClaw;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.limb.Limb;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.grimm.Die;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.grimm.Fusiliers;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.grimm.Fusiliers_A;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.grimm.pistol;
+import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public enum  EnchRecipe {
-    ERASE(Fusiliers.class,  Dome.class, Bornclairvoyant.class),
+    ERASE(Limb.class,  GhoulsClaw.class, GhoulsClaw.class),
     ERASEe(Fusiliers_A.class,  Doom.class, Bornclairvoyant.class),
     ERASE2(Die.class,  Dome.class, Amok.class);
 
@@ -28,10 +29,6 @@ public enum  EnchRecipe {
         this.input.addAll(Arrays.asList(in));
 
     }
-
-    public static final int last_enchant_index = 1;
-    //find a corresponding recipe and return it, or return null.
-
     public static EnchRecipe searchForRecipe(Item item) {
         for (EnchRecipe recipe : EnchRecipe.values()) {
             if (recipe.IE.contains(item.getClass())) {
@@ -40,36 +37,24 @@ public enum  EnchRecipe {
         }
         return null;
     }
-    // 根据给定的物品类获取对应的第一个 Buff 类
-    public static Class<? extends Buff> getFirstBuffClassForItem(Item item) {
-        EnchRecipe recipe = searchForRecipe(item); // 查找对应的配方
-        if (recipe != null && !recipe.input.isEmpty()) {
-            return recipe.input.get(0); // 返回第一个 Buff 类
-        }
-        return null; // 没有找到对应的 Buff 类
-    }
+
     // Example method to get input classes of a recipe
     public ArrayList<Class<? extends Buff>> getInputClasses() {
         return new ArrayList<>(this.input);
     }
-    //simply enchant
-    //the return boolean indicates if ingredients should be consumed.
-//    public static boolean enchant(EnchRecipe recipe){
-//        if(recipe == null){
-//            return false;
-//        }
-//        Inscription inscription = Reflection.newInstance(recipe.inscription);
-//        if(inscription == null){
-//            return false;
-//        }
-//        if(inscription instanceof CountInscription){
-//            ((CountInscription) inscription).setTriggers(recipe.triggers);
-//        }
-//        if(toEnchant.inscription != null){
-//            toEnchant.inscription.detachFromWeapon();
-//        }
-//        inscription.attachToWeapon(toEnchant);
-//        return true;
-//    }
+    public boolean canUseErase(ArrayList<Buff> currentBuffs) {
+        for (Class<? extends Buff> buffClass : input) {
+            for (Buff buff : currentBuffs) {
+                if (buff.getClass() == buffClass) {
+                    return true; // 如果当前 Buff 中存在与传入 Buff 相同的 Buff，则返回 true
+                }
+            }
+        }
+        return false; // 否则返回 false
+    }
+    public static <T extends Buff> T appendd(Class<T> buffClass) {
+        T buff = Reflection.newInstance(buffClass); // 创建指定类型的 buff 实例
+        return buff; // 返回创建的 buff 实例
+    }
 
 }

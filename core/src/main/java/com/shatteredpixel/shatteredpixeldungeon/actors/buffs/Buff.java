@@ -59,7 +59,12 @@ public class Buff extends Actor {
 	public HashSet<Class> immunities() {
 		return new HashSet<>(immunities); // 返回免疫技能类型的集合副本
 	}
-
+	private int strengthBonusIncrement = 1; // 力量加成增量值
+	private static int totalStrengthBonus; // 当前总力量加成
+	// 方法示例，用于增加力量加成
+	public void addStrengthBonus() {
+		totalStrengthBonus += strengthBonusIncrement;
+	}
 	public boolean attachTo(Char target) {
 
 		if (target.isImmune(getClass())) {
