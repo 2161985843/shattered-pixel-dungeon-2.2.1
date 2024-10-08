@@ -60,6 +60,7 @@ public class ItemSpriteSheet {
 	public static final int CATA_HOLDER     = PLACEHOLDERS+13;
 	public static final int ELIXIR_HOLDER   = PLACEHOLDERS+14;
 	public static final int SPELL_HOLDER    = PLACEHOLDERS+15;
+
 	static{
 		assignItemRect(SOMETHING,       8,  13);
 		assignItemRect(WEAPON_HOLDER,   14, 14);
@@ -77,12 +78,13 @@ public class ItemSpriteSheet {
 		assignItemRect(CATA_HOLDER,     6,  15);
 		assignItemRect(ELIXIR_HOLDER,   12, 14);
 		assignItemRect(SPELL_HOLDER,    8,  16);
+
 	}
 
 	private static final int UNCOLLECTIBLE  =                               xy(1, 2);   //16 slots
 	public static final int GOLD            = UNCOLLECTIBLE+0;
 	public static final int ENERGY          = UNCOLLECTIBLE+1;
-
+	public static final int NULL          = UNCOLLECTIBLE+2;
 	public static final int DEWDROP         = UNCOLLECTIBLE+3;
 	public static final int PETAL           = UNCOLLECTIBLE+4;
 	public static final int SANDBAG         = UNCOLLECTIBLE+5;
@@ -95,7 +97,7 @@ public class ItemSpriteSheet {
 	static{
 		assignItemRect(GOLD,        15, 13);
 		assignItemRect(ENERGY,      16, 16);
-
+		assignItemRect(NULL,      16, 16);
 		assignItemRect(DEWDROP,     10, 10);
 		assignItemRect(PETAL,       8,  8);
 		assignItemRect(SANDBAG,     10, 10);
@@ -717,6 +719,7 @@ public class ItemSpriteSheet {
 	public static final int TOKEN   = QUEST+6;
 	public static final int BLOB    = QUEST+7;
 	public static final int SHARD   = QUEST+8;
+	public static final int LIMB   = QUEST+9;
 	static{
 		assignItemRect(SKULL,   16, 11);
 		assignItemRect(DUST,    12, 11);
@@ -727,6 +730,7 @@ public class ItemSpriteSheet {
 		assignItemRect(TOKEN,   12, 12);
 		assignItemRect(BLOB,    10,  9);
 		assignItemRect(SHARD,    8, 10);
+		assignItemRect(LIMB,    10, 12);
 	}
 
 	private static final int BAGS       =                                   xy(1, 31);  //16 slots

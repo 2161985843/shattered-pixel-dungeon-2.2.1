@@ -64,6 +64,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SnipersMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.properties.GhoulsClaw;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
@@ -680,7 +681,9 @@ public class Hero extends Char {
 			} else if (axy != null) {
 				dmg = axy.damageRoll(this);
 			}
-
+			if (buff(GhoulsClaw.class) != null) {
+				dmg += GhoulsClaw.getTotalStrengthBonus();
+			}
 
 			// 如果不是远程武器，则增加武器伤害加成
 			if (!(wep instanceof MissileWeapon)) dmg += RingOfForce.armedDamageBonus(this);
@@ -689,7 +692,9 @@ public class Hero extends Char {
 			// 如果是空手战斗
 			// 根据空手战斗造成的伤害计算
 			dmg = RingOfForce.damageRoll(this);
-
+			if (buff(GhoulsClaw.class) != null) {
+				dmg += GhoulsClaw.getTotalStrengthBonus()*2;
+			}
 			// 如果空手战斗可以获得武器增益效果
 			if (RingOfForce.unarmedGetsWeaponAugment(this)){
 				dmg = ((Weapon)belongings.attackingWeapon()).augment.damageFactor(dmg);
