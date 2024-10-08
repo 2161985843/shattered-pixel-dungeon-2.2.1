@@ -106,7 +106,7 @@ public class ItemSlot extends Button {
 	protected void createChildren() {
 		
 		super.createChildren();
-		
+
 		sprite = new ItemSprite();
 		add(sprite);
 		
@@ -119,7 +119,7 @@ public class ItemSlot extends Button {
 		level = new BitmapText( PixelScene.pixelFont);
 		add(level);
 	}
-	
+
 	@Override
 	protected void layout() {
 		super.layout();

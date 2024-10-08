@@ -77,7 +77,6 @@ public class ItemSprite extends MovieClip {
 	public ItemSprite() {
 		this( ItemSpriteSheet.SOMETHING, null );
 	}
-	
 	public ItemSprite( Heap heap ){
 		super(Assets.Sprites.ITEMS);
 		view( heap );

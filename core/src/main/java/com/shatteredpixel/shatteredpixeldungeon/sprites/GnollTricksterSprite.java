@@ -77,4 +77,5 @@ public class GnollTricksterSprite extends MobSprite {
 
 		}
 	}
+
 }
