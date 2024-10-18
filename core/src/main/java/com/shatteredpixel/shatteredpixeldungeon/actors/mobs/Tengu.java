@@ -55,6 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.levels.GhoulsBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -245,6 +246,7 @@ public class Tengu extends Mob {
 		if (enemy == null) return;
 		
 		int newPos;
+
 		if (Dungeon.level instanceof PrisonBossLevel){
 			PrisonBossLevel level = (PrisonBossLevel) Dungeon.level;
 			

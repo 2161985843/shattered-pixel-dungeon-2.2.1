@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.LimbBags;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
@@ -59,11 +60,11 @@ public class WndBag extends WndTabbed {
 	protected static final int COLS_P   = 6;
 	protected static final int COLS_L   = 6;
 	
-	protected static int SLOT_WIDTH_P   = 26;
-	protected static int SLOT_WIDTH_L   = 26;
+	protected static int SLOT_WIDTH_P   = 23;
+	protected static int SLOT_WIDTH_L   = 23;
 
-	protected static int SLOT_HEIGHT_P	= 28;
-	protected static int SLOT_HEIGHT_L	= 28;
+	protected static int SLOT_HEIGHT_P	= 25;
+	protected static int SLOT_HEIGHT_L	= 25;
 
 	protected static final int SLOT_MARGIN	= 1;
 	
@@ -245,7 +246,7 @@ public class WndBag extends WndTabbed {
 		placeItem( stuff.ring != null ? stuff.ring : new Placeholder( ItemSpriteSheet.RING_HOLDER ) );
 
 
-		int equipped = 5;
+		int equipped = 6;
 
 		//容器本身，如果不是根背包
 		if (container != Dungeon.hero.belongings.backpack){
@@ -405,6 +406,9 @@ public class WndBag extends WndTabbed {
 			return Icons.get( Icons.WAND_HOLSTER );
 		} else if (bag instanceof PotionBandolier) {
 			return Icons.get( Icons.POTION_BANDOLIER );
+		}
+		else if (bag instanceof LimbBags) {
+			return Icons.get( Icons.LIMB_BAG );
 		} else {
 			return Icons.get( Icons.BACKPACK );
 		}

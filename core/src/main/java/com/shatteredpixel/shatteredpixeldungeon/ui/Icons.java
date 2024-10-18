@@ -86,12 +86,13 @@ public enum Icons {
 	PASTE,
 	COIN_SML,
 	ENERGY_SML,
+
 	BACKPACK,
 	SEED_POUCH,
 	SCROLL_HOLDER,
 	WAND_HOLSTER,
 	POTION_BANDOLIER,
-
+	LIMB_BAG,
 	//icons that appear in the game itself, variable spacing
 	TARGET,
 	SKULL,
@@ -295,6 +296,9 @@ public enum Icons {
 				break;
 			case POTION_BANDOLIER:
 				icon.frame( icon.texture.uvRectBySize( 241, 64, 10, 10 ) );
+				break;
+			case LIMB_BAG:
+				icon.frame( icon.texture.uvRectBySize( 201, 74, 10, 10 ) );
 				break;
 
 			case TARGET:
