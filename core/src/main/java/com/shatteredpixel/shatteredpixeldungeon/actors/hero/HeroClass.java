@@ -110,7 +110,7 @@ public enum HeroClass {
 
 		new VelvetPouch().collect();
 		Dungeon.LimitedDrops.VELVET_POUCH.drop();
-
+		new VelvetPouch().collect();
 		Waterskin waterskin = new Waterskin();
 		waterskin.collect();
 

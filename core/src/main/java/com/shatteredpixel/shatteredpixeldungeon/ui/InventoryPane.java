@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.LimbBags;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
@@ -484,6 +485,8 @@ public class InventoryPane extends Component {
 			return Icons.get( Icons.WAND_HOLSTER );
 		} else if (bag instanceof PotionBandolier) {
 			return Icons.get( Icons.POTION_BANDOLIER );
+		}  else if (bag instanceof LimbBags) {
+			return Icons.get( Icons.LIMB_BAG );
 		} else {
 			return Icons.get( Icons.BACKPACK );
 		}

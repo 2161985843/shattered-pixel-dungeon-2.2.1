@@ -640,8 +640,15 @@ public class ItemSpriteSheet {
 		for (int i = BREWS; i < BREWS+16; i++)
 			assignItemRect(i, 12, 14);
 	}
-	
-	                                                                                    //16 free slots
+
+	private static final int LIMB_BOSS        =                               xy(1, 26);  //8 slots
+	public static final int LIMB_goo   = LIMB_BOSS+0;
+	public static final int LIMB_GhoulsLord   = LIMB_BOSS+1;
+	static{
+		assignItemRect(LIMB_goo,    16, 16);
+		assignItemRect(LIMB_GhoulsLord,    16, 16);}
+
+	//16 free slots
 	
 	private static final int SPELLS         =                               xy(1, 27);  //16 slots
 	public static final int MAGIC_PORTER    = SPELLS+0;

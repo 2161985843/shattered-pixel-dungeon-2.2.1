@@ -2,8 +2,9 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.properties;
 
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 
-public class GhoulsClaw extends Properties{
+public class GhoulsHide extends Properties{
     private int strengthBonusIncrement = 1; // 力量加成增量值
     private static int StrengthBonus=1; // 当前总力量加成
 
@@ -20,7 +21,7 @@ public class GhoulsClaw extends Properties{
     }
 
     public  int getTotalStrengthBonus() {
-        return StrengthBonus;
+        return Random.NormalIntRange(0+StrengthBonus/3, StrengthBonus);
     }
 
     public String name() {
@@ -28,7 +29,7 @@ public class GhoulsClaw extends Properties{
     }
 
     public String desc() {
-        return Messages.get(this, "desc", StrengthBonus);
+        return Messages.get(this, "desc",StrengthBonus/3, StrengthBonus);
     }
 
     private static final String FLAT = "flat";

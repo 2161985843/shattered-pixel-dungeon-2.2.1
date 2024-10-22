@@ -47,12 +47,13 @@ public class Assets {
 		public static final String WATER_CAVES  = "environment/water2.png";
 		public static final String WATER_CITY   = "environment/water3.png";
 		public static final String WATER_HALLS  = "environment/water4.png";
-
+		public static final String WATER_GHOULS  = "environment/water5.png";
 		public static final String WEAK_FLOOR       = "environment/custom_tiles/weak_floor.png";
 		public static final String SEWER_BOSS       = "environment/custom_tiles/sewer_boss.png";
 		public static final String PRISON_QUEST     = "environment/custom_tiles/prison_quest.png";
 		public static final String RUINS_ZERO     = "environment/custom_tiles/zero.png";
 		public static final String RUINS_ZEROA     = "environment/custom_tiles/zero_a.png";
+		public static final String GHOULS_LEVEL     = "environment/custom_tiles/GhoulsLevel.png";
 		public static final String PRISON_EXIT      = "environment/custom_tiles/prison_exit.png";
 		public static final String CAVES_QUEST      = "environment/custom_tiles/caves_quest.png";
 		public static final String CAVES_BOSS       = "environment/custom_tiles/caves_boss.png";
@@ -154,6 +155,7 @@ public class Assets {
 	}
 
 	public static class Sounds {
+		public static final String ENGULF    = "sounds/engulf.mp3";
 		public static final String CLICK    = "sounds/click.mp3";
 		public static final String BADGE    = "sounds/badge.mp3";
 		public static final String GOLD     = "sounds/gold.mp3";
@@ -236,7 +238,7 @@ public class Assets {
 				DESCEND, EAT, READ, LULLABY, DRINK, SHATTER, ZAP, LIGHTNING, LEVELUP, DEATH,
 				CHALLENGE, CURSED, TRAP, EVOKE, TOMB, ALERT, MELD, BOSS, BLAST, PLANT, RAY, BEACON,
 				TELEPORT, CHARMS, MASTERY, PUFF, ROCKS, BURNING, FALLING, GHOST, SECRET, BONES,
-				BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, MINE
+				BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, MINE,ENGULF
 		};
 	}
 
@@ -296,6 +298,14 @@ public class Assets {
 		public static final String MAKER    = "sprites/wandmaker.png";
 		public static final String FRAN    = "sprites/Fran.png";
 		public static final String EVS    = "sprites/EvilSacrifice.png";
+		public static final String EVSS    = "sprites/gnolle.png";
+
+		public static final String GHOULS   = "sprites/ghouls.png";
+		public static final String GSG    = "sprites/GSG.png";
+		public static final String BAKER    = "sprites/Banditkiller.png";
+		public static final String ARDBTS    = "sprites/Armedbandits.png";
+
+		public static final String GHOUL_LORD    = "sprites/ghoullord.png";
 		public static final String TROLL    = "sprites/blacksmith.png";
 		public static final String IMP      = "sprites/demon.png";
 		public static final String RATKING  = "sprites/ratking.png";

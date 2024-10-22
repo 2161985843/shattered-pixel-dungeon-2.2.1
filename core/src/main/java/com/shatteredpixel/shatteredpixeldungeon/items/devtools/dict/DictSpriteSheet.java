@@ -243,6 +243,8 @@ public class DictSpriteSheet {
     public static final int GNOLL_DARTER    = 209 + 10000;
     public static final int GREAT_CRAB      = 210 + 10000;
 
+    public static final int BKR             = 211 + 10000;
+    public static final int ADBS             = 211 + 10000;
     public static final int THIEF           = 300 + 10000;
     public static final int BANDIT          = 301 + 10000;
     public static final int SKELETON        = 302 + 10000;

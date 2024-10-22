@@ -46,6 +46,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ScrollEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WandEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.properties.Bornclairvoyant;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.properties.Dome;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.properties.GhoulsHide;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.properties.GhoulsTongue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -479,6 +481,13 @@ public enum Talent {
 				hero.HP = Math.min(hero.HP + 1 + hero.pointsInTalent(HEARTY_MEAL), hero.HT);
 				hero.sprite.emitter().burst(Speck.factory(Speck.HEALING), hero.pointsInTalent(HEARTY_MEAL));
 			}
+		}
+		if (hero.buff(GhoulsTongue.class) != null){
+			// 增加HoldFast类增益效果提供的额外护甲减伤值
+			hero.HT=hero.HT+1;
+			hero.HP=hero.HP+1;
+			GhoulsTongue ghoulsTongue = new GhoulsTongue();
+			ghoulsTongue.addStrengthBonus();
 		}
 		if (hero.hasTalent(IRON_STOMACH)){
 			if (hero.cooldown() > 0) {

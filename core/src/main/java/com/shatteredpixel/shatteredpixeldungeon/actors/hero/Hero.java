@@ -65,6 +65,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SnipersMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.properties.GhoulsClaw;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.properties.GhoulsFodo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.properties.GhoulsHide;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.properties.GhoulsTongue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
@@ -236,6 +239,9 @@ public class Hero extends Char {
 		belongings = new Belongings( this );
 		
 		visibleEnemies = new ArrayList<>();
+		GhoulsClaw.getIncrementValue();
+		GhoulsHide.getIncrementValue();
+
 	}
 
 	public void updateHT( boolean boostHP ){
@@ -653,7 +659,10 @@ public class Hero extends Char {
 			// 增加HoldFast类增益效果提供的额外护甲减伤值
 			dr += buff(HoldFast.class).armorBonus();
 		}
-
+		if (buff(GhoulsHide.class) != null){
+			// 增加HoldFast类增益效果提供的额外护甲减伤值
+			dr += buff(GhoulsHide.class).getTotalStrengthBonus();
+		}
 		// 返回最终的护甲减伤值
 		return dr;
 	}
@@ -668,7 +677,7 @@ public class Hero extends Char {
 		KindOfWeapon wep = belongings.attackingWeapon();
 		KindOfWeapon axy = belongings.attackingauxiliary();
 		int dmg=0;
-
+		GhoulsClaw ghoulsClawBuff = new GhoulsClaw();
 		// 如果非空手战斗
 		if (!RingOfForce.fightingUnarmed(this)) {
 			// 根据当前装备的武器进行伤害计算
@@ -682,7 +691,7 @@ public class Hero extends Char {
 				dmg = axy.damageRoll(this);
 			}
 			if (buff(GhoulsClaw.class) != null) {
-				dmg += GhoulsClaw.getTotalStrengthBonus();
+				dmg += ghoulsClawBuff.getTotalStrengthBonus();
 			}
 
 			// 如果不是远程武器，则增加武器伤害加成
@@ -693,7 +702,7 @@ public class Hero extends Char {
 			// 根据空手战斗造成的伤害计算
 			dmg = RingOfForce.damageRoll(this);
 			if (buff(GhoulsClaw.class) != null) {
-				dmg += GhoulsClaw.getTotalStrengthBonus()*2;
+				dmg += ghoulsClawBuff.getTotalStrengthBonus()*2;
 			}
 			// 如果空手战斗可以获得武器增益效果
 			if (RingOfForce.unarmedGetsWeaponAugment(this)){
@@ -2033,7 +2042,17 @@ public class Hero extends Char {
 		curAction = null;
 
 		Ankh ankh = null;
+		if (hero.HP<=0&&(hero.buff(GhoulsFodo.class) != null)){
+			GameScene.flash(0x000000);
 
+			SpellSprite.show(this, SpellSprite.ANKH);
+			((HeroSprite)sprite).read1();
+			hero.HP=hero.HT/2;
+			CellEmitter.get(hero.pos).start(Speck.factory(Speck.BLACK_WATER), 0.2f, 20);
+			Buff.detach(this,GhoulsFodo.class);
+			GLog.w(Messages.get(GhoulsFodo.class, "revive"));
+			return;
+		}
 		//look for ankhs in player inventory, prioritize ones which are blessed.
 		for (Ankh i : belongings.getAllItems(Ankh.class)){
 			if (ankh == null || i.isBlessed()) {

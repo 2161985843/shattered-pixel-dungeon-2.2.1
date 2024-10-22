@@ -48,6 +48,8 @@ public class HeroSprite extends CharSprite {
 	private Animation fly;
 	private Animation read;
 
+	private Animation szss;
+
 	public HeroSprite() {
 		super();
 		
@@ -88,7 +90,9 @@ public class HeroSprite extends CharSprite {
 
 		read = new Animation( 20, false );
 		read.frames( film, 19, 20, 20, 20, 20, 20, 20, 20, 20, 19 );
-		
+
+		szss = new Animation( 20, false );
+		szss.frames( film, 11 ,11 , 12, 10, 11,9, 8,8, 0 );
 		if (Dungeon.hero.isAlive())
 			idle();
 		else
@@ -133,6 +137,16 @@ public class HeroSprite extends CharSprite {
 			}
 		};
 		play( read );
+	}
+	public synchronized void read1() {
+		animCallback = new Callback() {
+			@Override
+			public void call() {
+				idle();
+				ch.onOperateComplete();
+			}
+		};
+		play( szss );
 	}
 
 	@Override

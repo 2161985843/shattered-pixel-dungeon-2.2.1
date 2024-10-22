@@ -2,18 +2,12 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SacrificeRoom.prize;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM201;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.EvilSacrifice;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.IronTree;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
