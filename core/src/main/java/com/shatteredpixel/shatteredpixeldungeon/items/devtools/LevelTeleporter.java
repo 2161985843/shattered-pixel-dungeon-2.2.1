@@ -49,7 +49,7 @@ public class LevelTeleporter  extends TestItem {
     private static final String AC_VIEW = "view";
     private static final String AC_TP = "teleport";
     private static final String AC_INTER_TP = "interlevel_tp";
-
+    private static final String AC_INTER_CHO = "cz";
     @Override
     public ArrayList<String> actions(Hero hero ) {
         ArrayList<String> actions = super.actions( hero );
@@ -58,6 +58,7 @@ public class LevelTeleporter  extends TestItem {
         actions.add(AC_VIEW);
         actions.add(AC_TP);
         actions.add(AC_INTER_TP);
+        actions.add(AC_INTER_CHO);
         return actions;
     }
 
@@ -114,6 +115,11 @@ public class LevelTeleporter  extends TestItem {
                 return;
             }
             GameScene.show(new WndSelectLevel());
+        }else if(action.equals(AC_INTER_CHO)){
+
+                Dungeon.level.unseal();
+                InterlevelScene.mode=InterlevelScene.mode.RESET;
+                Game.switchScene( InterlevelScene.class );
         }
     }
 

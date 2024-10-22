@@ -22,13 +22,12 @@ public class WndPicture extends WndTabbed {
         resize( (int)image.width(), (int)image.height()  );
 
     }
-    public WndPicture(String assets, float scale, String text) {
+    public WndPicture(String assets,  String text) {
         super();
-
 
         // 创建并加载图片
         Image image = new Image(assets);
-        image.scale.set(scale);
+        image.scale.set(0.1f);
 
         // 创建并设置图像
         IconTitle icon = new IconTitle(image, null);

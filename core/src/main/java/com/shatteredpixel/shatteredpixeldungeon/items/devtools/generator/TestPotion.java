@@ -38,6 +38,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.PhantomMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.StewedMeat;
+import com.shatteredpixel.shatteredpixeldungeon.items.limb.GhoulsLordclaw;
+import com.shatteredpixel.shatteredpixeldungeon.items.limb.Limb;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlchemicalCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
@@ -254,6 +256,7 @@ public class TestPotion extends TestGenerator {
             case 10: return ItemSpriteSheet.RATION;
             case 11: default: return ItemSpriteSheet.CHEST;
             case 12: return ItemSpriteSheet.SEAL_SHARD;
+            case 13: return ItemSpriteSheet.BROKEN_STAFF;
         }
     }
 
@@ -466,6 +469,7 @@ public class TestPotion extends TestGenerator {
             case 8: return Berry.class;
             default:
             case 9: return PhantomMeat.class;
+
         }
     }
 
@@ -492,9 +496,10 @@ public class TestPotion extends TestGenerator {
         switch (id){
             case 0: default:return SealShard.class;
             case 1: return BrokenStaff.class;
-
+            case 2: return GhoulsLordclaw.class;
             case 3: return BowFragment.class;
             case 4: return BrokenHilt.class;
+
         }
     }
 

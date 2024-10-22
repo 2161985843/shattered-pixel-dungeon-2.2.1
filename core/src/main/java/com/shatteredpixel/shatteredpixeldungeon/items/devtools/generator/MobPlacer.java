@@ -1,6 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.devtools.generator;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -12,6 +11,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Albino;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ArmoredBrute;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ArmoredStatue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bandit;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ne.Armedbandits;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ne.Banditkiller;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Brute;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CausticSlime;
@@ -57,6 +58,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Thief;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.TormentedSpirit;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ne.Ghouls;
 import com.shatteredpixel.shatteredpixeldungeon.items.devtools.dict.DictSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.items.devtools.messages.M;
 import com.shatteredpixel.shatteredpixeldungeon.items.devtools.TestItem;
@@ -70,7 +72,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.StatueSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
-import com.shatteredpixel.shatteredpixeldungeon.ui.OptionSlider;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
@@ -79,9 +80,7 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Reflection;
 
-import java.awt.Checkbox;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 
 public class MobPlacer extends TestItem {
@@ -407,6 +406,9 @@ public class MobPlacer extends TestItem {
     private enum DataPack{
         RAT(Rat.class, DictSpriteSheet.RAT),
         //TESTRAT(TestRat.class, DictSpriteSheet.RAT),
+        BKR(Banditkiller.class, DictSpriteSheet.BKR),
+        ADBS(Armedbandits.class, DictSpriteSheet.ADBS),
+        GHOULS(Ghouls.class, DictSpriteSheet.ADBS),
         GNOLL(Gnoll.class, DictSpriteSheet.GNOLL),
         SNAKE(Snake.class, DictSpriteSheet.SNAKE),
         ALBINO(Albino.class, DictSpriteSheet.ALBINO),

@@ -10,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.AngryHeadParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.devtools.Enchanter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.grimm.Die;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.grimm.pistol;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
@@ -122,19 +123,29 @@ public class Fran extends NPC {
                 GameScene.show( new WndQuest( Fran.this, text ));
             }
         });
-    }  private void showWindow(final String messageKey) {
+    }
+    private void showWindow(final String messageKey) {
+        if (Dungeon.depth==0){
         Game.runOnRenderThread(new Callback() {
             @Override
             public void call() {
                 // 创建一个包含图片和文本的窗口，并显示
-                GameScene.show(new WndPicture(Assets.Sprites.EYE00, 0.2F, Messages.get(Fran.class, messageKey)));
+                GameScene.show(new WndPicture(Assets.Sprites.EYE00,  Messages.get(Fran.class, messageKey)));
 //                GameScene.show(new Enchanter.WndEnchant());
             }
-        });
+        });}else {
+        Game.runOnRenderThread(new Callback() {
+            @Override
+            public void call() {
+                // 创建一个包含图片和文本的窗口，并显示
+
+                GameScene.show(new Enchanter.WndEnchant());
+            }
+        });}
     }
     int day = 1;
     public boolean interact(Char c) {
-
+        if (Dungeon.depth==0){
             switch (day) {
                 case 1:
                     showWindow("fran_1");
@@ -148,42 +159,45 @@ public class Fran extends NPC {
                     this.day++;
                     showWindow("fran_3");
                     break;
+                case 4:
+                    showWindow("fran_4");
+                    this.day++;
+                    break;
+                case 5:
+                    this.day++;
+                    showWindow("fran_5");
+                    break;
+                case 6:
+                    this.day++;
+                    showWindow("fran_6");
+                    break;
                 default:
-                    yell(  Messages.get(this, "fran_4") );
+                    yell(  Messages.get(this, "fran_7") );
             }
+        }else {
+            showWindow("fran_1");
+        }
 
         if (c != Dungeon.hero){
             return true;
         }
 
-        boolean scissors = false;
-        boolean tincture = false;
+//        boolean tincture = false;
+//
+//        if(!hasgivenitems){
+//            Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.FOOD ) ), Dungeon.hero.pos );
+//            for (Item i : Dungeon.hero.belongings.backpack){
+//                if(i instanceof Die){
+//                    scissors = true;
+//                }
+//            }
 
-
-
-
-        if(!hasgivenitems){
-            Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.FOOD ) ), Dungeon.hero.pos );
-            for (Item i : Dungeon.hero.belongings.backpack){
-                if(i instanceof Die){
-                    scissors = true;
-                }
-            }
-            for (Item i : Dungeon.hero.belongings.backpack){
-                if(i instanceof pistol){
-                    tincture = true;
-                }
-            }
-            if(scissors == false ){
-                new Sai().collect();
-            }
-            if(tincture == false){
-                new pistol().collect();
-            }
-            hasgivenitems = true;
-
-        return true;
-    }
+//            if(tincture == false){
+//                new pistol().collect();
+//            }
+//            hasgivenitems = true;
+//        return true;
+//    }
         return false;
     }
     private  final String DAY	= "day";
