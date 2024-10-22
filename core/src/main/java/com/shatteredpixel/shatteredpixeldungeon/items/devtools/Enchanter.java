@@ -82,7 +82,7 @@ public class Enchanter extends ChallengeItem {
 
     public static class WndEnchant extends Window {
         private static final int BTN_SIZE = 24;
-        private static final int WIDTH = 180;
+        private static final int WIDTH = 130;
         private static final int GAP = 2;
 
         private final ItemButton[] inputs = new ItemButton[1];
@@ -92,6 +92,8 @@ public class Enchanter extends ChallengeItem {
         private final RedButton ew;
 
         private   RenderedTextBlock title1;
+
+        private   RenderedTextBlock title2;
         private   EnchRecipe recipe;
         public WndEnchant(){
             // 调用父类构造函数，创建一个银色窗口
@@ -114,18 +116,13 @@ public class Enchanter extends ChallengeItem {
 
                         @Override
                         protected void onClick() {
-                            super.onClick();        try {
-                                Dungeon.saveAll();
-                            } catch (IOException e) {
-                                ShatteredPixelDungeon.reportException(e);
-                            }
+                            super.onClick();
                             // 如果按钮有物品
                             if (item != null) {
                                 // 如果物品不能被收集，则将其丢弃
                                 if (!item.collect()) {
                                     Dungeon.level.drop(item, hero.pos);
-                                } add(title1);
-                                remove(title1);
+                                } dota();
                                 item = null;
                                 // 清空按钮的物品并更新状态
                                 slot.item(new WndBag.Placeholder(ItemSpriteSheet.SOMETHING));
@@ -148,7 +145,7 @@ public class Enchanter extends ChallengeItem {
                         }
                     };
                     // 设置按钮的位置和大小
-                    inputs[i].setRect(WIDTH / 8f - inputs.length * BTN_SIZE / 2f - GAP * 3 * ((inputs.length - 1) / 2f)+5 ,45, BTN_SIZE, BTN_SIZE);
+                    inputs[i].setRect(WIDTH / 8f - inputs.length * BTN_SIZE / 2f - GAP * 3 * ((inputs.length - 1) / 2f)+5 ,40, BTN_SIZE, BTN_SIZE);
                     xpos += BTN_SIZE + GAP * 3;
                     // 将按钮添加到窗口中
                     add(inputs[i]);
@@ -211,28 +208,27 @@ public class Enchanter extends ChallengeItem {
                                     }
 
                                     if (!hasBuff) { // 如果没有相同的 Buff，才添加
-                                        add(title1);
-                                        remove(title1);
+                                        dota();
                                         Buff.append(hero, firstBuffClass);
-                                        GLog.w(""+M.L(firstBuffClass, "name"));
+                                        GLog.p( Messages.capitalize(Messages.get(hero, "you_now_have")+  (M.L(firstBuffClass, "name"))));
+                                        doEnchant();
                                     } else {
-                                        add(title1);
-                                        remove(title1);
+                                        dota();
                                         buffInstance.addStrengthBonus();
-                                        GLog.w(M.L(firstBuffClass, "name") + " is already active.");
+                                        GLog.p(M.L(firstBuffClass, "name")+"获得同源变得更强了");
                                         doEnchant();
                                     }
 
                                 }
                             }
-                        }
+                        }  updateState();
+                        Sample.INSTANCE.play(Assets.Sounds.ENGULF); // 播放附魔音效
                     }
-                    updateState();
-                    Sample.INSTANCE.play(Assets.Sounds.EVOKE); // 播放附魔音效
+
                 }
             };
             // 设置执行按钮的位置和大小
-            ew.setRect(WIDTH / 3f , inputs[0].bottom()/2 - GAP * 2, 27, 18);
+            ew.setRect(WIDTH / 3f , inputs[0].bottom()/2 - GAP * 5, 20, 18);
             add(ew);
             // 创建并配置执行按钮
             execute = new RedButton("") {
@@ -279,29 +275,48 @@ public class Enchanter extends ChallengeItem {
                          recipe = EnchRecipe.searchForRecipe(inputs[0].item);
                         if (recipe != null) {
                             ArrayList<Class<? extends Buff>> buffClasses = recipe.getInputClasses();
+
                             if (!buffClasses.isEmpty()) {
-                                Class<? extends Buff> lastBuffClass = buffClasses.get(buffClasses.size() - 1); // 获取第一个 Buff 类
-                                Buff.append(hero, lastBuffClass);
-                                GLog.w(M.L(lastBuffClass, "name"));
+                                Class<? extends Buff> lastBuffClass = buffClasses.get(buffClasses.size() - 1); // 获取第2个 Buff 类
+                                Buff buffInstance = appendd( buffClasses.get(0));
+                                // 检查当前英雄是否已经有该 Buff
+                                boolean hasBuff = false;
+                                for (Buff buff : hero.buffs()) {
+                                    if (buff.getClass() == lastBuffClass) {
+                                        hasBuff = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!hasBuff) { // 如果没有相同的 Buff，才添加
+                                    dota();
+                                    Buff.append(hero, lastBuffClass);
+                                    GLog.p( Messages.capitalize(Messages.get(hero, "you_now_have")+  (M.L(lastBuffClass, "name"))));
+                                    doEnchant();
+                                } else {
+                                    dota();
+                                    buffInstance.addStrengthBonus();
+                                    GLog.p(M.L(lastBuffClass, "name")+"获得同源变得更强了");
+                                    doEnchant();
+                                }
+
                             }
                         }
+                        updateState();
+                        Sample.INSTANCE.play(Assets.Sounds.ENGULF); // 播放附魔音效
                     }
-                    // 执行附魔操作
-                    doEnchant();
-                    updateState();
-                    Sample.INSTANCE.play(Assets.Sounds.EVOKE); // 播放附魔音效
                 }
             };
 
             // 设置执行按钮的位置和大小
-            execute.setRect(WIDTH / 3f , inputs[0].bottom() + GAP * 2-13, 27, 18);
+            execute.setRect(WIDTH / 3f , inputs[0].bottom() + GAP * 2-5, 20, 18);
             add(execute);
 
-            Image arrow;
-            arrow = Icons.get(Icons.ARROW);
-            arrow.x=40;
-            arrow.y=50;
-            add(arrow);
+//            Image arrow;
+//            arrow = Icons.get(Icons.ARROW);
+//            arrow.x=40;
+//            arrow.y=50;
+//            add(arrow);
 
             textButton button1 = new textButton("") {
                 @Override
@@ -338,8 +353,8 @@ public class Enchanter extends ChallengeItem {
             // 添加按钮并设置位置
             add(button1);
             add(button2);
-            button1.setRect(WIDTH / 2f + 14 , inputs[0].bottom() / 2 - 16, 70,30); // Set the class for the first button
-            button2.setRect(WIDTH / 2f + 14, inputs[0].bottom() / 2 +20, 70,30); // Set the class for the second button
+            button1.setRect(WIDTH / 2f + 5 , inputs[0].bottom() / 2 - 16, 50,30);
+            button2.setRect(WIDTH / 2f + 5, inputs[0].bottom() / 2 +23, 50,30);
 
             slotReset();
 
@@ -365,7 +380,12 @@ public class Enchanter extends ChallengeItem {
                 ShatteredPixelDungeon.reportException(e); // 记录异常
             }
         }
-
+        private  void dota(){
+         add(title1);
+        remove(title1);
+        add(title2);
+        remove(title2);
+        }
         // 执行附魔操作
         private void doEnchant() {
             // 检查要附魔的物品是否是武器
@@ -445,10 +465,6 @@ public class Enchanter extends ChallengeItem {
             public void onSelect(Item item) {
                 synchronized (inputs) {
                     if (item != null && inputs[0] != null) {
-                        if (item.isEquipped(hero)) {
-                            GLog.w(M.L(Enchanter.class, "unequip_first")); // 提示用户先卸下装备
-                            return;
-                        }
 
                         // 将选择的物品放入第一个空槽位
                         for (int i = 0; i < inputs.length; i++) {
@@ -466,14 +482,30 @@ public class Enchanter extends ChallengeItem {
                                 if (title1 != null) {
                                     remove(title1);
                                 }
+
                                 // 创建一个新的文本块以显示所有 Buff
                                 StringBuilder buffText = new StringBuilder();
-                                for (Class<? extends Buff> buffClass : buffClasses) {
-                                    buffText.append(M.L(buffClass, "name")).append("\n\n\n\n\n");
-                                }
+                                StringBuilder buffText1 = new StringBuilder();
+
+                                // 正确获取第一个 Buff 类
+                                Class<? extends Buff> firstBuffClass = buffClasses.get(0);
+                                buffText.append(M.L(firstBuffClass, "name"));
+
+                                // 添加第一个 Buff 的标题
                                 title1 = PixelScene.renderTextBlock(buffText.toString(), 7);
-                                title1.setPos(WIDTH / 2f + 25, inputs[0].bottom() / 2 - 4);
+                                title1.setPos(WIDTH / 2f + 10, inputs[0].bottom() / 2 - 4);
                                 add(title1);
+
+                                // 正确获取最后一个 Buff 类
+                                // 这里的索引应该是 buffClasses.size() - 1，而不是 -1
+                                Class<? extends Buff> lastBuffClass = buffClasses.get(buffClasses.size() - 1);
+                                buffText1.append(M.L(lastBuffClass, "name"));
+
+                                // 添加最后一个 Buff 的标题
+                                title2 = PixelScene.renderTextBlock(buffText1.toString(), 7);
+                                title2.setPos(WIDTH / 2f + 10, inputs[0].bottom() / 2 + 35);
+                                add(title2);
+
                             }
                         }
                         updateState();
@@ -662,7 +694,7 @@ class textButton extends Component {
             protected void onPointerDown() {
                 // 当指针按下时，增加背景亮度，并播放点击声音
                 bg.brightness(1.2f);
-                Sample.INSTANCE.play(Assets.Sounds.ENGULF);
+                Sample.INSTANCE.play(Assets.Sounds.TRAP);
             }
             @Override
             protected void onPointerUp() {

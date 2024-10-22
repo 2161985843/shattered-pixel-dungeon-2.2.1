@@ -39,8 +39,10 @@ public class Terrain {
 	public static final int WALL_DECO		= 12;
 	public static final int BARRICADE		= 13;
 	public static final int EMPTY_SP		= 14;
-	public static final int RUINS		= 37;
-	public static final int SIGN		= 38;
+	public static final int RUINS		= 37;//废墟
+	public static final int SIGN		= 38;//血迹
+	public static final int CUSTOM_PLOTS		= 39;//个人自定义墙壁
+
 	public static final int HIGH_GRASS		= 15;
 	public static final int FURROWED_GRASS	= 30;
 
@@ -118,6 +120,7 @@ public class Terrain {
 		flags[MINE_CRYSTAL] = SOLID;
 		flags[MINE_BOULDER] = SOLID;
 
+		flags[CUSTOM_PLOTS] = SOLID;
 		flags[RUINS] = SOLID;
 		flags[SIGN] = PASSABLE;
 	}

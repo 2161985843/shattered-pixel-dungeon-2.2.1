@@ -6,7 +6,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.properties.Bornclairvoyant;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.properties.Dome;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.properties.GhoulsClaw;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.properties.GhoulsFodo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.properties.GhoulsHide;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.properties.GhoulsTongue;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.limb.GhoulsClawLimb;
+import com.shatteredpixel.shatteredpixeldungeon.items.limb.GhoulsLordclaw;
 import com.shatteredpixel.shatteredpixeldungeon.items.limb.Limb;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.grimm.Die;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.grimm.Fusiliers_A;
@@ -16,9 +21,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public enum  EnchRecipe {
-    ERASE(Limb.class,  GhoulsClaw.class, GhoulsClaw.class),
-    ERASEe(Fusiliers_A.class,  Doom.class, Bornclairvoyant.class),
-    ERASE2(Die.class,  Dome.class, Amok.class);
+    ERASE(Limb.class,  GhoulsHide.class, GhoulsTongue.class),
+    ERASEe(GhoulsClawLimb.class,  GhoulsClaw.class, GhoulsHide.class),
+    ERASE2(Die.class,  GhoulsTongue.class, Amok.class),
+    ERASE3(GhoulsLordclaw.class,  GhoulsTongue.class, GhoulsFodo.class);
 
     public ArrayList<Class<? extends Buff>> input = new ArrayList<>();
     public ArrayList<Class<? extends Item>> IE = new ArrayList<>();

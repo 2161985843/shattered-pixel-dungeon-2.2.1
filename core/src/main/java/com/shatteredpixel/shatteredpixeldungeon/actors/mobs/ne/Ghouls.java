@@ -37,7 +37,7 @@ public class Ghouls  extends Mob {
         state = SLEEPING;
 
         // 定义角色掉落的物品类型
-        loot = GhoulsClawLimb.class; // 掉落金钱
+        loot = GhoulsClawLimb.class;
         lootChance = 0.3f; // 掉落的概率为20%
 
         // 角色的属性集合，包含该角色的特性
