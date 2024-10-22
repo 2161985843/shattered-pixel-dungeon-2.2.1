@@ -352,6 +352,7 @@ public class Generator {
 			//see generator.randomWeapon
 			WEAPON.classes = new Class<?>[]{};
 			WEAPON.probs = new float[]{};
+
 			GRM_T1.classes = new Class<?>[]{
 					Cannon.class, //2 drop every chapter, see Dungeon.posNeeded()
 					Changtong_a.class,
@@ -363,6 +364,7 @@ public class Generator {
 			};
 			GRM_T1.defaultProbs = new float[]{ 2, 0, 2, 2, 2 };
 			GRM_T1.probs = GRM_T1.defaultProbs.clone();
+
 			WEP_T1.classes = new Class<?>[]{
 					WornShortsword.class,
 					MagesStaff.class,

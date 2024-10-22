@@ -48,7 +48,8 @@ public class Speck extends Image {
 	public static final int BUBBLE      = 12;
 	public static final int STEAM       = 13;
 	public static final int COIN        = 14;
-	
+	public static final int BLACK_WATER        = 15;
+
 	public static final int DISCOVER    = 101;
 	public static final int EVOKE       = 102;
 	public static final int MASK        = 103;
@@ -245,7 +246,7 @@ public class Speck extends Image {
 			angle = Random.Float( 360 );
 			angularSpeed = 360;
 			break;
-			
+
 		case WOOL:
 			lifespan = 0.5f;
 			speed.set( 0, -50 );
@@ -376,8 +377,16 @@ public class Speck extends Image {
 			acc.y = 256;
 			lifespan = -speed.y / acc.y * 2;
 			break;
+		case BLACK_WATER:
+			speed.set(0, -10);  // 设置垂直向下的速度
+			acc.set(0, 0);      // 不需要加速
+			angle = 0;        // 直接向下
+			angularSpeed = 0;   // 不旋转
+			lifespan = Random.Float(1f, 3f);  // 随机寿命，设为2到4秒之间
+			scale.set(Random.Float(1, 1.5f));  // 随机缩放，模拟不同大小的油滴
+			break;
 		}
-		
+
 		left = lifespan;
 	}
 	
@@ -441,19 +450,19 @@ public class Speck extends Image {
 			case RATTLE:
 				am = p < 0.9f ? 1 : (1 - p) * 10;
 				break;
-				
+
 			case ROCK:
 				am = p < 0.2f ? p * 5 : 1 ;
 				break;
-				
+
 			case NOTE:
 				am = 1 - p * p;
 				break;
-				
+
 			case WOOL:
 				scale.set( 1 - p );
 				break;
-				
+
 			case CHANGE:
 				am = (float)Math.sqrt( (p < 0.5f ? p : 1 - p) * 2);
 				scale.y = (1 + p) * 0.5f;
@@ -498,6 +507,13 @@ public class Speck extends Image {
 				scale.x = (float)Math.cos( left * 5 );
 				rm = gm = bm = (Math.abs( scale.x ) + 1) * 0.5f;
 				am = p < 0.9f ? 1 : (1 - p) * 10;
+				break;
+
+			case BLACK_WATER:
+				// 第二部分：设置缩放和颜色
+				scale.x = (float)Math.abs(Math.sin(left * 5)); // 使用正弦函数进行缩放
+				rm = gm = bm = (Math.abs(scale.x) + 1) * 0.5f; // 设置RGB颜色值
+				am = p < 0.9f ? 1 : (1 - p) * 10; // 设置透明度
 				break;
 			}
 		}

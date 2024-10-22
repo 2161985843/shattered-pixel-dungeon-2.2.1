@@ -57,6 +57,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.CavesLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DeadEndLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.GhoulsBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HallsBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HallsLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LastLevel;
@@ -213,7 +214,7 @@ public class Dungeon {
 	public static boolean dailyReplay;
 	public static String customSeedText = "";
 	public static long seed;
-	
+
 	public static void init() {
 
 		initialVersion = version = Game.versionCode;
@@ -291,7 +292,7 @@ public class Dungeon {
 	public static boolean levelHasBeenGenerated(int depth, int branch){
 		return generatedLevels.contains(depth + 1000*branch);
 	}
-	
+
 	public static Level newLevel() {
 		
 		Dungeon.level = null;
@@ -306,13 +307,15 @@ public class Dungeon {
 				case 2:
 				case 3:
 				case 4:
+				case 6:
 					level = new SewerLevel();
 					break;
 				case 5:
 					level = new SewerBossLevel();
 					break;
-				case 6:
 				case 7:
+					level = new GhoulsBossLevel();
+					break;
 				case 8:
 				case 9:
 					level = new PrisonLevel();
@@ -433,7 +436,7 @@ public class Dungeon {
 	}
 	
 	public static boolean bossLevel( int depth ) {
-		return depth == 5 || depth == 10 || depth == 15 || depth == 20 || depth == 25;
+		return depth == 5 || depth == 7 ||depth == 10 || depth == 15 || depth == 20 || depth == 25;
 	}
 
 	//value used for scaling of damage values and other effects.

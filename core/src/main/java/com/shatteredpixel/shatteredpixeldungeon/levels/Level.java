@@ -1076,25 +1076,26 @@ public abstract class Level implements Bundlable {
 
 		return false;
 	}
-	public void generateRandomWater( int cell) {
-		int pos = 0;
-		ArrayList<Integer> visibleValid = new ArrayList<>();
-		ArrayList<Integer> notVisibleValid = new ArrayList<>();
-		ArrayList<Integer> notSeenValid = new ArrayList<>();
-		if (!notSeenValid.isEmpty()){
-			pos = Random.element(notSeenValid);
-		} else if (!notVisibleValid.isEmpty()){
-			pos = Random.element(notVisibleValid);
-		} else if (!visibleValid.isEmpty()){
-			pos = Random.element(visibleValid);
-		}
-		// 随机生成水块
-		for (int i = 0; i < cell; i++) {
-			 // 如果当前位置是空地
-				set(pos, Terrain.SIGN); // 将该位置设置为告示牌
-				GameScene.updateMap(pos); // 更新地图
+	public boolean setCellToWater_1( boolean includeTraps, int cell ){
+		Point p = cellToPoint(cell);
 
+		int terr = map[cell];
+		if (terr == Terrain.EMPTY || terr == Terrain.GRASS ||
+				terr == Terrain.EMBERS || terr == Terrain.EMPTY_SP ||
+				terr == Terrain.HIGH_GRASS || terr == Terrain.FURROWED_GRASS
+				|| terr == Terrain.EMPTY_DECO){
+			set(cell, Terrain.WATER);
+			GameScene.updateMap(cell);
+			return true;
+		} else if (includeTraps && (terr == Terrain.SECRET_TRAP ||
+				terr == Terrain.TRAP || terr == Terrain.INACTIVE_TRAP)){
+			set(cell, Terrain.WATER);
+			level.traps.remove(cell);
+			GameScene.updateMap(cell);
+			return true;
 		}
+
+		return false;
 	}
 
 	public int fallCell( boolean fallIntoPit ) {
