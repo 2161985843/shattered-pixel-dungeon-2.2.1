@@ -71,6 +71,21 @@ import java.util.Arrays;
 
 abstract public class Weapon extends KindOfWeapon {
 
+	public enum WeaponType {
+		WU,
+		FINESSE, // 灵巧
+		Heavy,// 重型
+		Light,// 轻型
+		Special,//特殊
+		Reach,//触及
+		NULL
+
+	}
+	public WeaponType WeaponTypeFactor(){
+		return Weapontype;
+	}
+	public  WeaponType Weapontype;
+
 	public float    ACC = 1f;	// Accuracy modifier
 	public float	DLY	= 1f;	// Speed modifier
 	public int      RCH = 1;    // Reach modifier (only applies to melee hits)
@@ -98,7 +113,7 @@ abstract public class Weapon extends KindOfWeapon {
 	}
 	
 	public Augment augment = Augment.NONE;
-	
+
 	private static final int USES_TO_ID = 20;
 	private float usesLeftToID = USES_TO_ID;
 	private float availableUsesToID = USES_TO_ID/2f;

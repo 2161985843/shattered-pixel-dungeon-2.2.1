@@ -30,11 +30,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import com.watabou.utils.BArray;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
@@ -48,9 +50,18 @@ abstract public class KindOfWeapon extends EquipableItem {
 
 	protected String hitSound = Assets.Sounds.HIT;
 	protected float hitSoundPitch = 1f;
-	private boolean equipFull =false;;
+	private boolean equipFull =false;
+	public Weapon.WeaponType Weapontype;
 
+	public Weapon.WeaponType WeaponTypeFactor() {
 
+		if (Dungeon.hero.belongings.weapon !=null){
+			return Dungeon.hero.belongings.weapon.Weapontype;
+		}else {
+			return  Weapontype;
+		}
+
+	}
 	@Override
 	public void execute(Hero hero, String action) {
 		if (action.equals(AC_EQUIP)&&hero.subClass == HeroSubClass.CHAMPION){
@@ -337,5 +348,6 @@ abstract public class KindOfWeapon extends EquipableItem {
 	public void hitSound( float pitch ){
 		Sample.INSTANCE.play(hitSound, 1, pitch * hitSoundPitch);
 	}
-	
+
+
 }
