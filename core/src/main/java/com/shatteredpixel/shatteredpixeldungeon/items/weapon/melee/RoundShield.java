@@ -37,7 +37,7 @@ public class RoundShield extends MeleeWeapon {
 		image = ItemSpriteSheet.ROUND_SHIELD;
 		hitSound = Assets.Sounds.HIT;
 		hitSoundPitch = 1f;
-
+		Weapontype=WeaponType.Special;
 		tier = 3;
 	}
 

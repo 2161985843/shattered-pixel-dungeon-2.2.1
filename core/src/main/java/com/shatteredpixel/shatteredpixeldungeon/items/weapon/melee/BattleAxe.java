@@ -34,7 +34,7 @@ public class BattleAxe extends MeleeWeapon {
 		image = ItemSpriteSheet.BATTLE_AXE;
 		hitSound = Assets.Sounds.HIT_SLASH;
 		hitSoundPitch = 0.9f;
-
+		Weapontype=WeaponType.Heavy;
 		tier = 4;
 		ACC = 1.24f; //24% boost to accuracy
 	}

@@ -35,7 +35,7 @@ public class Crossbow extends MeleeWeapon {
 		image = ItemSpriteSheet.CROSSBOW;
 		hitSound = Assets.Sounds.HIT;
 		hitSoundPitch = 1f;
-		
+		Weapontype=WeaponType.Special;
 		//check Dart.class for additional properties
 		
 		tier = 4;

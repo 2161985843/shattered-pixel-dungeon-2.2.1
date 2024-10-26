@@ -42,7 +42,7 @@ public class Flail extends MeleeWeapon {
 		image = ItemSpriteSheet.FLAIL;
 		hitSound = Assets.Sounds.HIT_CRUSH;
 		hitSoundPitch = 0.8f;
-
+		Weapontype=WeaponType.Special;
 		tier = 4;
 		ACC = 0.8f; //0.8x accuracy
 		//also cannot surprise attack, see Hero.canSurpriseAttack

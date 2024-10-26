@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.properties.GhoulsTongue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
@@ -63,15 +64,18 @@ public class MeleeWeapon extends Weapon {
 	@Override
 	public void activate(Char ch) {
 		super.activate(ch);
-		if (ch instanceof Hero && ((Hero) ch).heroClass == HeroClass.DUELIST){
+
 			Buff.affect(ch, Charger.class);
-		}
+
 	}
 
 	@Override
 	public String defaultAction() {
 		if (Dungeon.hero != null &&!support &&(Dungeon.hero.heroClass == HeroClass.DUELIST
-			|| Dungeon.hero.hasTalent(Talent.SWIFT_EQUIP))){
+						|| Dungeon.hero.hasTalent(Talent.SWIFT_EQUIP))){
+			return AC_ABILITY;
+		}
+		else if ((Dungeon.hero.buff(GhoulsTongue.class) != null && Dungeon.hero.belongings.weapon.WeaponTypeFactor()==WeaponType.FINESSE)) {
 			return AC_ABILITY;
 		} else {
 			return super.defaultAction();
@@ -84,6 +88,11 @@ public class MeleeWeapon extends Weapon {
 		if (isEquipped(hero) && hero.heroClass == HeroClass.DUELIST&&!support){
 			actions.add(AC_ABILITY);
 		}
+		else if (isEquipped(hero) &&!support&&((Dungeon.hero.buff(GhoulsTongue.class) != null
+				&& Dungeon.hero.belongings.weapon.WeaponTypeFactor()==WeaponType.FINESSE))){
+			actions.add(AC_ABILITY);
+		}
+
 		return actions;
 	}
 
@@ -107,14 +116,14 @@ public class MeleeWeapon extends Weapon {
 					if (hero.buff(Talent.SwiftEquipCooldown.class) == null
 						|| hero.buff(Talent.SwiftEquipCooldown.class).hasSecondUse()){
 						execute(hero, AC_EQUIP);
-					} else if (hero.heroClass == HeroClass.DUELIST) {
+					} else if (hero.heroClass == HeroClass.DUELIST
+							||Dungeon.hero.buff(GhoulsTongue.class) != null &&hero.belongings.weapon.WeaponTypeFactor()==WeaponType.FINESSE) {
 						GLog.w(Messages.get(this, "ability_need_equip"));
 					}
-				} else if (hero.heroClass == HeroClass.DUELIST) {
+				} else if (hero.heroClass == HeroClass.DUELIST
+						||Dungeon.hero.buff(GhoulsTongue.class) != null &&hero.belongings.weapon.WeaponTypeFactor()==WeaponType.FINESSE) {
 					GLog.w(Messages.get(this, "ability_need_equip"));
 				}
-			} else if (hero.heroClass != HeroClass.DUELIST){
-				//do nothing
 			} else if (STRReq() > hero.STR()){
 				GLog.w(Messages.get(this, "ability_low_str"));
 			} else if (hero.belongings.weapon == this &&
@@ -358,7 +367,24 @@ public class MeleeWeapon extends Weapon {
 	public String info() {
 
 		String info = desc();
-
+		switch (Weapontype) {
+			case FINESSE:
+				info += "\n " + Messages.get(Weapon.class, "finesse");
+				break;
+			case Heavy:
+				info += "\n " + Messages.get(Weapon.class, "heavy");
+				break;
+			case Light:
+				info += " \n" + Messages.get(Weapon.class, "light");
+				break;
+			case Special:
+				info += "\n " + Messages.get(Weapon.class, "special");
+				break;
+			case Reach:
+				info += " \n" + Messages.get(Weapon.class, "reach");
+				break;
+			case NULL:
+		}
 		if (levelKnown) {
 			info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_known", tier, augment.damageFactor(min()), augment.damageFactor(max()), STRReq());
 			if (STRReq() > Dungeon.hero.STR()) {
@@ -372,6 +398,10 @@ public class MeleeWeapon extends Weapon {
 				info += " " + Messages.get(MeleeWeapon.class, "probably_too_heavy");
 			}
 		}
+
+
+
+
 
 		String statsInfo = statsInfo();
 		if (!statsInfo.equals("")) info += "\n\n" + statsInfo;
@@ -407,7 +437,9 @@ public class MeleeWeapon extends Weapon {
 		}
 
 		//the mage's staff has no ability as it can only be gained by the mage
-		if (Dungeon.hero.heroClass == HeroClass.DUELIST && !(this instanceof MagesStaff)){
+		if (Dungeon.hero.heroClass == HeroClass.DUELIST&& !(this instanceof MagesStaff)
+				||(Dungeon.hero.buff(GhoulsTongue.class) != null && Dungeon.hero.belongings.weapon != null && Dungeon.hero.belongings.weapon.WeaponTypeFactor()==WeaponType.FINESSE)
+				){
 			info += "\n\n" + Messages.get(this, "ability_desc");
 		}
 		

@@ -44,6 +44,7 @@ public class Rapier extends MeleeWeapon {
 		image = ItemSpriteSheet.RAPIER;
 		hitSound = Assets.Sounds.HIT_SLASH;
 		hitSoundPitch = 1.3f;
+		Weapontype=WeaponType.Light;
 
 		tier = 1;
 

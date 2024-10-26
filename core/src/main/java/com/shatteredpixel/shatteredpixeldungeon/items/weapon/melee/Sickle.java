@@ -42,7 +42,7 @@ public class Sickle extends MeleeWeapon {
 		image = ItemSpriteSheet.SICKLE;
 		hitSound = Assets.Sounds.HIT_SLASH;
 		hitSoundPitch = 1f;
-
+		Weapontype=WeaponType.Light;
 		tier = 2;
 		ACC = 0.68f; //32% penalty to accuracy
 	}

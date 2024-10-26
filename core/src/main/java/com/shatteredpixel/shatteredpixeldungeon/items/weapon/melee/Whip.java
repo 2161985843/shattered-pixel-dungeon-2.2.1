@@ -40,7 +40,7 @@ public class Whip extends MeleeWeapon {
 		image = ItemSpriteSheet.WHIP;
 		hitSound = Assets.Sounds.HIT;
 		hitSoundPitch = 1.1f;
-
+		Weapontype=WeaponType.Reach;
 		tier = 3;
 		RCH = 3;    //lots of extra reach
 	}

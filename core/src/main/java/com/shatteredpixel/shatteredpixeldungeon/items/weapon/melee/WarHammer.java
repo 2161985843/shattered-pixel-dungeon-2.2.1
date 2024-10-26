@@ -34,7 +34,7 @@ public class WarHammer extends MeleeWeapon {
 		image = ItemSpriteSheet.WAR_HAMMER;
 		hitSound = Assets.Sounds.HIT_CRUSH;
 		hitSoundPitch = 1f;
-
+		Weapontype=WeaponType.Heavy;
 		tier = 5;
 		ACC = 1.20f; //20% boost to accuracy
 	}

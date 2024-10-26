@@ -33,7 +33,7 @@ public class WarScythe extends MeleeWeapon {
 		image = ItemSpriteSheet.WAR_SCYTHE;
 		hitSound = Assets.Sounds.HIT_SLASH;
 		hitSoundPitch = 0.9f;
-
+		Weapontype=WeaponType.Heavy;
 		tier = 5;
 		ACC = 0.8f; //20% penalty to accuracy
 	}

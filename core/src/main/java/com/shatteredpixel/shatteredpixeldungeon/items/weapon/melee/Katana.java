@@ -33,7 +33,7 @@ public class Katana extends MeleeWeapon {
 		image = ItemSpriteSheet.KATANA;
 		hitSound = Assets.Sounds.HIT_SLASH;
 		hitSoundPitch = 1.1f;
-
+		Weapontype=WeaponType.FINESSE;
 		tier = 4;
 	}
 

@@ -43,6 +43,7 @@ public class Sai extends MeleeWeapon {
 		image = ItemSpriteSheet.SAI;
 		hitSound = Assets.Sounds.HIT_STAB;
 		hitSoundPitch = 1.3f;
+		Weapontype=WeaponType.FINESSE;
 
 		tier = 3;
 		DLY = 0.5f; //2x speed

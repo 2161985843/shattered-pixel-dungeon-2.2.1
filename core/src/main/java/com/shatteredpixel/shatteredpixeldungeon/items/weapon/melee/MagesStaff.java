@@ -73,7 +73,7 @@ public class MagesStaff extends MeleeWeapon {
 		image = ItemSpriteSheet.MAGES_STAFF;
 		hitSound = Assets.Sounds.HIT;
 		hitSoundPitch = 1.1f;
-
+		Weapontype=WeaponType.NULL;
 		tier = 1;
 
 		defaultAction = AC_ZAP;

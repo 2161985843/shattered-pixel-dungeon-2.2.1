@@ -30,7 +30,7 @@ public class Greatshield extends MeleeWeapon {
 
 	{
 		image = ItemSpriteSheet.GREATSHIELD;
-
+		Weapontype=WeaponType.Heavy;
 		tier = 5;
 	}
 

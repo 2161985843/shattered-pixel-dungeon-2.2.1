@@ -22,7 +22,7 @@ public class Armedbandits extends Mob {
 
     EXP = 5;
 
-    loot = Generator.Category.MIS_T2;
+    loot = Generator.Category.GRM_T1;
     lootChance = 1f;
     }
 

@@ -32,7 +32,7 @@ public class Glaive extends MeleeWeapon {
 		image = ItemSpriteSheet.GLAIVE;
 		hitSound = Assets.Sounds.HIT_SLASH;
 		hitSoundPitch = 0.8f;
-
+		Weapontype=WeaponType.Reach;
 		tier = 5;
 		DLY = 1.5f; //0.67x speed
 		RCH = 2;    //extra reach

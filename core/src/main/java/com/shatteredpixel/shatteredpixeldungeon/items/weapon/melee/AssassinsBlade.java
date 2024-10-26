@@ -35,7 +35,7 @@ public class AssassinsBlade extends MeleeWeapon {
 		image = ItemSpriteSheet.ASSASSINS_BLADE;
 		hitSound = Assets.Sounds.HIT_STAB;
 		hitSoundPitch = 0.9f;
-
+		Weapontype=WeaponType.Light;
 		tier = 4;
 	}
 

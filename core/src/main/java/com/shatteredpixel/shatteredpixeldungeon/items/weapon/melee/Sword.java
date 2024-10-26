@@ -43,7 +43,7 @@ public class Sword extends MeleeWeapon {
 		image = ItemSpriteSheet.SWORD;
 		hitSound = Assets.Sounds.HIT_SLASH;
 		hitSoundPitch = 1f;
-
+		Weapontype=WeaponType.FINESSE;
 		tier = 3;
 	}
 

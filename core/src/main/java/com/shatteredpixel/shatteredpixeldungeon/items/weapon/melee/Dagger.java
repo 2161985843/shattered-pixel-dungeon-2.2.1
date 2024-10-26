@@ -46,6 +46,7 @@ public class Dagger extends MeleeWeapon {
 		image = ItemSpriteSheet.DAGGER;
 		hitSound = Assets.Sounds.HIT_STAB;
 		hitSoundPitch = 1.1f;
+		Weapontype=WeaponType.Light;
 
 		tier = 1;
 		

@@ -35,7 +35,7 @@ public class Dirk extends MeleeWeapon {
 		image = ItemSpriteSheet.DIRK;
 		hitSound = Assets.Sounds.HIT_STAB;
 		hitSoundPitch = 1f;
-
+		Weapontype=WeaponType.Light;
 		tier = 2;
 	}
 

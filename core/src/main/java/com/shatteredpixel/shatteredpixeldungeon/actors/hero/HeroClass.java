@@ -49,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.LimbBags;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.devtools.generator.LazyTest;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
@@ -110,7 +111,7 @@ public enum HeroClass {
 
 		new VelvetPouch().collect();
 		Dungeon.LimitedDrops.VELVET_POUCH.drop();
-		new VelvetPouch().collect();
+		new LimbBags().collect();
 		Waterskin waterskin = new Waterskin();
 		waterskin.collect();
 

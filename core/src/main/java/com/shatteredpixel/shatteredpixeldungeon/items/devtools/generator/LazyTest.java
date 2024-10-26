@@ -91,7 +91,6 @@ public class LazyTest extends TestGenerator {
 
             new Enchanter().quantity(1).identify().collect();
             new PotionBandolier().quantity(1).identify().collect();
-            new VelvetPouch().quantity(1).identify().collect();
             new MagicalHolster().quantity(1).identify().collect();
             new ScrollHolder().quantity(1).identify().collect();
             new Tool().quantity(1).identify().collect();

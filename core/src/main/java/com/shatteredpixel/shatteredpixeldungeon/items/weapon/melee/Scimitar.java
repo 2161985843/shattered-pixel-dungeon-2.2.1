@@ -35,6 +35,7 @@ public class Scimitar extends MeleeWeapon {
 		image = ItemSpriteSheet.SCIMITAR;
 		hitSound = Assets.Sounds.HIT_SLASH;
 		hitSoundPitch = 1.2f;
+		Weapontype=WeaponType.FINESSE;
 
 		tier = 3;
 		DLY = 0.8f; //1.25x speed

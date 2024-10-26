@@ -33,7 +33,7 @@ public class WornShortsword extends MeleeWeapon {
 		image = ItemSpriteSheet.WORN_SHORTSWORD;
 		hitSound = Assets.Sounds.HIT_SLASH;
 		hitSoundPitch = 1.1f;
-
+		Weapontype=WeaponType.WU;
 		tier = 1;
 
 		bones = false;

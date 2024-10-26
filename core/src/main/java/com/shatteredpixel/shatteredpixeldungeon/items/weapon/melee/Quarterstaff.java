@@ -34,6 +34,7 @@ public class Quarterstaff extends MeleeWeapon {
 	{
 		image = ItemSpriteSheet.QUARTERSTAFF;
 		hitSound = Assets.Sounds.HIT_CRUSH;
+		Weapontype=WeaponType.FINESSE;
 		hitSoundPitch = 1f;
 
 		tier = 2;
