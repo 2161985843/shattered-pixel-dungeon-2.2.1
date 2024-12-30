@@ -284,7 +284,7 @@ public class MeleeWeapon extends Weapon {
 	}
 
 	public int tier;
-	public boolean twohands;
+
 	public boolean support;
 	@Override
 	public int min(int lvl) {
@@ -457,7 +457,7 @@ public class MeleeWeapon extends Weapon {
 			Charger buff = Dungeon.hero.buff(Charger.class);
 			if (Dungeon.hero.belongings.weapon == this) {
 				return buff.charges + "/" + buff.chargeCap();
-			} else {
+			}else {
 				return buff.secondCharges + "/" + buff.secondChargeCap();
 			}
 		} else {
@@ -555,6 +555,9 @@ public class MeleeWeapon extends Weapon {
 		}
 
 		public int chargeCap(){
+			if(Dungeon.hero.heroClass != HeroClass.DUELIST){
+				return Math.min(10, 2 + (Dungeon.hero.lvl-1)/3);
+			}
 			return Math.min(10, 3 + (Dungeon.hero.lvl-1)/3);
 		}
 

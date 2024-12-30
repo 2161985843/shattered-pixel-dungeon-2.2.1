@@ -59,6 +59,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.TormentedSpirit;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ne.Ghouls;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ne.GiantRat;
 import com.shatteredpixel.shatteredpixeldungeon.items.devtools.dict.DictSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.items.devtools.messages.M;
 import com.shatteredpixel.shatteredpixeldungeon.items.devtools.TestItem;
@@ -404,7 +405,7 @@ public class MobPlacer extends TestItem {
     }
 
     private enum DataPack{
-        RAT(Rat.class, DictSpriteSheet.RAT),
+        RAT(GiantRat.class, DictSpriteSheet.RAT),
         //TESTRAT(TestRat.class, DictSpriteSheet.RAT),
         BKR(Banditkiller.class, DictSpriteSheet.BKR),
         ADBS(Armedbandits.class, DictSpriteSheet.ADBS),

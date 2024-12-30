@@ -36,7 +36,6 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
-import com.sun.org.apache.bcel.internal.generic.NEW;
 import com.watabou.utils.BArray;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
@@ -50,7 +49,6 @@ abstract public class KindOfWeapon extends EquipableItem {
 
 	protected String hitSound = Assets.Sounds.HIT;
 	protected float hitSoundPitch = 1f;
-	private boolean equipFull =false;
 	public Weapon.WeaponType Weapontype;
 
 	public Weapon.WeaponType WeaponTypeFactor() {
@@ -123,55 +121,29 @@ abstract public class KindOfWeapon extends EquipableItem {
 		// 记录英雄是否在装备前已经拥有该物品
 		boolean wasInInv = hero.belongings.contains(this);
 		detachAll( hero.belongings.backpack );
-		boolean shouldEquip=false;
 
-		String primaryName = Messages.titleCase(hero.belongings.weapon != null ? hero.belongings.weapon.trueName() : Messages.get(KindOfWeapon.class, "empty"));
-		String auxiliaryName = Messages.titleCase(hero.belongings.auxiliary != null ? hero.belongings.auxiliary.trueName() : Messages.get(KindOfWeapon.class, "empty"));
-
-		if ((this instanceof MeleeWeapon) && ((MeleeWeapon) this).twohands) {
-			if (hero.belongings.weapon == null && hero.belongings.auxiliary == null)
-				shouldEquip = true;
-
-			else if (hero.belongings.weapon == null) {
-				shouldEquip = hero.belongings.auxiliary.doUnequip(hero, true);
-			} else if (hero.belongings.auxiliary == null) {
-				shouldEquip = hero.belongings.weapon.doUnequip(hero, true);
-			} else {
-				shouldEquip = hero.belongings.weapon.doUnequip(hero, true) && hero.belongings.auxiliary.doUnequip(hero, true);
-			}
-			if (shouldEquip) {
-				hero.belongings.weapon = this;
-				hero.belongings.auxiliary = null;
-				GLog.n(Messages.get(KindOfWeapon.class, "unequip_dd"));
-			} else {
-				this.equipFull = true;
-				collect(hero.belongings.backpack);
-				return false;
-			}
-		} else {
-			if (hero.belongings.weapon == null ) {
+			if (hero.belongings.weapon == null 	&& !((MeleeWeapon) this).support) {
 				hero.belongings.weapon = this;
 
-			} else if (hero.belongings.weapon instanceof MeleeWeapon && ((MeleeWeapon) hero.belongings.weapon).twohands
+			} else if (hero.belongings.weapon instanceof MeleeWeapon && !((MeleeWeapon) this).support
 					&&hero.belongings.weapon.doUnequip(hero, true)) {
 				hero.belongings.weapon = this;
-				GLog.n(Messages.get(KindOfWeapon.class, "twohands_unequip"));
+				GLog.i(Messages.get(KindOfWeapon.class, "twohands_unequip"));
 
 			}else if (hero.belongings.auxiliary == null&& ((MeleeWeapon) this).support) {
 				hero.belongings.auxiliary = this;
 
-			} else if (hero.belongings.weapon != null &&  hero.belongings.weapon.doUnequip(hero, true)) {
+			} else if (hero.belongings.weapon != null && !((MeleeWeapon) this).support&&  hero.belongings.weapon.doUnequip(hero, true)) {
 				hero.belongings.weapon = this;
 
-			} else if (hero.belongings.auxiliary != null && hero.belongings.auxiliary.doUnequip(hero, true)) {
+			} else if (hero.belongings.auxiliary != null && ((MeleeWeapon) this).support&& hero.belongings.auxiliary.doUnequip(hero, true)) {
 				hero.belongings.auxiliary = this;
 			}
-
 			else {
 				collect(hero.belongings.backpack);
 				return false;
 			}
-		}
+
 		// 激活物品效果
 		activate(hero);
 		// 触发装备物品时的天赋效果

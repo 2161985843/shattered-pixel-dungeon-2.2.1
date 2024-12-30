@@ -61,6 +61,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
@@ -481,13 +482,6 @@ public enum Talent {
 				hero.HP = Math.min(hero.HP + 1 + hero.pointsInTalent(HEARTY_MEAL), hero.HT);
 				hero.sprite.emitter().burst(Speck.factory(Speck.HEALING), hero.pointsInTalent(HEARTY_MEAL));
 			}
-		}
-		if (hero.buff(GhoulsTongue.class) != null){
-			// 增加HoldFast类增益效果提供的额外护甲减伤值
-			hero.HT=hero.HT+1;
-			hero.HP=hero.HP+1;
-			GhoulsTongue ghoulsTongue = new GhoulsTongue();
-			ghoulsTongue.addStrengthBonus();
 		}
 		if (hero.hasTalent(IRON_STOMACH)){
 			if (hero.cooldown() > 0) {

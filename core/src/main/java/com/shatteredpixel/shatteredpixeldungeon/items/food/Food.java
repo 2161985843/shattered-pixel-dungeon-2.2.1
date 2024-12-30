@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.properties.GhoulsTongue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
@@ -85,7 +86,14 @@ public class Food extends Item {
 			hero.spend( eatingTime() );
 
 			Talent.onFoodEaten(hero, energy, this);
-			
+
+			if (hero.buff(GhoulsTongue.class) != null){
+				hero.HP++;
+				hero.HT++;
+				GhoulsTongue ghoulsTongue = new GhoulsTongue();
+				ghoulsTongue.addStrengthBonus();
+			}
+
 			Statistics.foodEaten++;
 			Badges.validateFoodEaten();
 			

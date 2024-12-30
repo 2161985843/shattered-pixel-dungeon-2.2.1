@@ -22,7 +22,7 @@ public class Atest extends MeleeWeapon  {
         image = ItemSpriteSheet.SWORD;
         hitSound = Assets.Sounds.HIT_SLASH;
         hitSoundPitch = 1f;
-        twohands=true;
+
         tier = 3;
     }
     public int STRReq(int lvl) {

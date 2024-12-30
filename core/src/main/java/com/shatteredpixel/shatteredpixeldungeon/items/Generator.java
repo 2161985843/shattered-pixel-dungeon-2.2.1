@@ -362,7 +362,7 @@ public class Generator {
 					Pistol1.class,
 
 			};
-			GRM_T1.defaultProbs = new float[]{ 2, 0, 2, 2, 2 };
+			GRM_T1.defaultProbs = new float[]{ 1, 0, 3, 3, 4 };
 			GRM_T1.probs = GRM_T1.defaultProbs.clone();
 
 			WEP_T1.classes = new Class<?>[]{

@@ -3,16 +3,16 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.properties;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
-
+/**食尸鬼的皮肤**/
 public class GhoulsHide extends Properties{
     private int strengthBonusIncrement = 1; // 力量加成增量值
-    private static int StrengthBonus=1; // 当前总力量加成
+    private static int StrengthBonus; // 当前总力量加成
 
 
 
     public static int getIncrementValue() {
         // 获取力量加成增量值的当前值
-        return StrengthBonus;
+        return StrengthBonus=1;
     }
 
     // 方法示例，用于增加力量加成

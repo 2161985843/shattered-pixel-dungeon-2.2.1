@@ -210,7 +210,7 @@ public class Enchanter extends ChallengeItem {
                                     if (!hasBuff) { // 如果没有相同的 Buff，才添加
                                         dota();
                                         Buff.append(hero, firstBuffClass);
-                                        GLog.p( Messages.capitalize(Messages.get(hero, "you_now_have")+  (M.L(firstBuffClass, "name"))));
+                                        GLog.p( Messages.capitalize(Messages.get(hero, "you_now_limb",(M.L(firstBuffClass, "name")))));
                                         doEnchant();
                                     } else {
                                         dota();

@@ -234,28 +234,35 @@ public class Hero extends Char {
 		super();
 
 		HP = HT = 20;
+
 		STR = STARTING_STR;
 
 		belongings = new Belongings( this );
 		
 		visibleEnemies = new ArrayList<>();
-		GhoulsClaw.getIncrementValue();
-		GhoulsHide.getIncrementValue();
 
+		upzero();
 	}
 
 	public void updateHT( boolean boostHP ){
 		int curHT = HT;
-		
+
 		HT = 20 + 5*(lvl-1) + HTBoost;
 		float multiplier = RingOfMight.HTMultiplier(this);
 		HT = Math.round(multiplier * HT);
-		
+
 		if (buff(ElixirOfMight.HTBoost.class) != null){
 			HT += buff(ElixirOfMight.HTBoost.class).boost();
 		}
 		if (buff(ElixirOfMight.HTBoost.class) != null){
 			HT += buff(ElixirOfMight.HTBoost.class).boost();
+		}
+		if (buff(ElixirOfMight.HTBoost.class) != null){
+			HT += buff(ElixirOfMight.HTBoost.class).boost();
+		}
+		if (hero.buff(GhoulsTongue.class) != null){
+			// 增加HoldFast类增益效果提供的额外护甲减伤值
+			HT =buff(GhoulsTongue.class).boost()+HT;
 		}
 		if (boostHP){
 			HP += Math.max(HT - curHT, 0);
@@ -403,7 +410,11 @@ public class Hero extends Char {
 			return 0;
 		}
 	}
-	
+	public void upzero(){//初始化肢体加成类buff
+		GhoulsClaw.getIncrementValue();
+		GhoulsHide.getIncrementValue();
+		GhoulsTongue.getIncrementValue();
+	}
 	public String className() {
 		return subClass == null || subClass == HeroSubClass.NONE ? heroClass.title() : subClass.title();
 	}

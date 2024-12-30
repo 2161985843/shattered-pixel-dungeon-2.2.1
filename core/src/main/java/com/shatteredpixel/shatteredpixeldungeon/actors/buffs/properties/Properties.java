@@ -9,6 +9,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Properties extends Buff {
+    {
+        revivePersists=true;
+    }
 
     public enum Tag {
 
@@ -50,14 +53,14 @@ public class Properties extends Buff {
     private final Set<Tag> tags = new HashSet<>();
     // 构造函数
 
-    protected boolean cansBeGain(Hero hero) {
-        return true;
-    }
-    private int strBonus; // 力量加成
-    private int incrementCounter; // 递增计数器
+    private int strengthBonusIncrement = 1; // 力量加成增量值
+    private static int StrengthBonus=1; // 当前总力量加成
 
-    // 方法示例，用于增加力量加成
-    public void addStrengthBonus(int bonus) {
+
+
+    public static int getIncrementValue() {
+        // 获取力量加成增量值的当前值
+        return StrengthBonus;
     }
 
 

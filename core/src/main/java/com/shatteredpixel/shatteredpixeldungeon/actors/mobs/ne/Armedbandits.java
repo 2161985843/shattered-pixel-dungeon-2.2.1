@@ -23,7 +23,7 @@ public class Armedbandits extends Mob {
     EXP = 5;
 
     loot = Generator.Category.GRM_T1;
-    lootChance = 1f;
+    lootChance = 0.2f;
     }
 
     @Override
@@ -69,13 +69,6 @@ public class Armedbandits extends Mob {
         }
     }
 
-    // 创建掉落物品
-    @Override
-    public Item createLoot() {
-        MissileWeapon drop = (MissileWeapon) super.createLoot(); // 创建导弹武器
-        drop.quantity((drop.quantity() + 1) / 2); // 数量减半
-        return drop; // 返回掉落物品
-    }
 
 //    private boolean targeting = false; // 是否正在瞄准
 //    private boolean shot = true; // 是否已经射击

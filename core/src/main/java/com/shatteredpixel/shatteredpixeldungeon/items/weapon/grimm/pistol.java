@@ -288,8 +288,6 @@ public class pistol extends MeleeWeapon {
             info += "\n\n" + Messages.get(Weapon.class, "not_cursed");
         }
 
-        info += "\n\n" + Messages.get(MissileWeapon.class, "distance");
-
         return info;
     }
 

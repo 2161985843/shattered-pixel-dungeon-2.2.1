@@ -7,8 +7,6 @@ public class GhoulsClaw extends Properties{
     private int strengthBonusIncrement = 1; // 力量加成增量值
     private static int StrengthBonus=1; // 当前总力量加成
 
-
-
     public static int getIncrementValue() {
         // 获取力量加成增量值的当前值
         return StrengthBonus;
